@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package sockets_udp;
+package tptftp;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
