@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package sockets_udp;
+package tptftp;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -142,22 +142,22 @@ public class Machine {
         receptionData=new String(dp.getData(),"ascii");
     }
 
-    static void scanPorts(int debut, int nb) {
+    static int scanPorts(int debut, int nb) {
         DatagramSocket port;
         for (int i = debut; i <= debut+nb; i++) {
             try {
                 port = new DatagramSocket(i);
-                System.out.println((i)+" : Disponible");
+                return i;
             } 
             catch (SocketException e) {
-                System.out.println((i)+" : Utilisé");
             }
         }
+        return 0;
     }
     
-    public Machine (InetAddress IP, int port){
+    public Machine (InetAddress IP){
         adresseIP=IP;
-        portUDP = port;
+        portUDP = scanPorts(1024,1500);
         receptionPort = 0;
         buffer=new byte[100];
         initSocket ();
