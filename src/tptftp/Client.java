@@ -22,8 +22,8 @@ import java.util.Scanner;
 public class Client extends Machine {
 
     
-    public Client (InetAddress IP, int port){
-        super (IP, port);
+    public Client (InetAddress IP){
+        super (IP);
     }
     
     public String scanText () {
@@ -58,12 +58,12 @@ public class Client extends Machine {
      */
     public static void main(String[] args) throws UnknownHostException, UnsupportedEncodingException {
         InetAddress ip,ipServeur;
-        int port=1030, portServeur=1031;
+        int portServeur=69;
         
         ip= java.net.InetAddress.getLocalHost();
         ipServeur= java.net.InetAddress.getLocalHost();
         
-        Client client =new Client (ip, port);
+        Client client =new Client (ip);
         DatagramPacket dp= new DatagramPacket (client.getBuffer(), client.getBuffer().length);
         
         //Envoi du premier message au serveur

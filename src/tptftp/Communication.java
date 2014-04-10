@@ -16,7 +16,7 @@ import java.net.InetAddress;
 public class Communication extends Machine {
        
     public Communication (int portServeur, InetAddress ipServeur,int portClient, InetAddress ipClient){
-        super (ipServeur, portServeur);
+        super (ipServeur);
         setReceptionIP(ipServeur);
         setReceptionPort(portServeur);
     }

@@ -17,8 +17,8 @@ import java.net.UnknownHostException;
  */
 public class Serveur extends Machine{
 
-    public Serveur (InetAddress IP, int port){
-        super (IP, port);
+    public Serveur (InetAddress IP){
+        super (IP);
     }
     
     public boolean receptionServeur (DatagramPacket dp) throws UnsupportedEncodingException{
@@ -55,11 +55,10 @@ public class Serveur extends Machine{
      */
     public static void main(String[] args) throws UnknownHostException, UnsupportedEncodingException {
         InetAddress ip;
-        int port=1031;
         
         ip=java.net.InetAddress.getLocalHost();                
         
-        Serveur serveur =new Serveur (ip, port);
+        Serveur serveur =new Serveur (ip);
         
         serveur.demarerServeur();
         /*DatagramPacket dp= new DatagramPacket (serveur.getBuffer(), serveur.getBuffer().length);
