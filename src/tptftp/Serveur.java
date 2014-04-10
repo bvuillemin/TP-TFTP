@@ -59,7 +59,7 @@ public class Serveur extends Machine{
         ip=java.net.InetAddress.getLocalHost();                
         
         Serveur serveur =new Serveur (ip);
-        
+        serveur.setPortUDP(69);
         serveur.demarerServeur();
         /*DatagramPacket dp= new DatagramPacket (serveur.getBuffer(), serveur.getBuffer().length);
         
