@@ -15,7 +15,7 @@ import java.net.UnknownHostException;
  *
  * @author p1105476
  */
-public class Serveur extends Machine{
+public class Serveur extends Client{
 
     public Serveur (InetAddress IP){
         super (IP);

@@ -13,7 +13,7 @@ import java.net.InetAddress;
  *
  * @author Dimitri
  */
-public class Communication extends Machine {
+public class Communication extends Client {
        
     public Communication (int portServeur, InetAddress ipServeur,int portClient, InetAddress ipClient){
         super (ipServeur);
