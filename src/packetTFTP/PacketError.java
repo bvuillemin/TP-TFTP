@@ -1,0 +1,63 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package packetTFTP;
+
+/**
+ *
+ * @author Dimitri
+ */
+public class PacketError extends PacketTFTP{
+    
+    private int errorCode;
+    private String errMsg;
+    
+    public PacketError() {
+        super("5");
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String ErrMsg) {
+        this.errMsg = ErrMsg;
+    }
+    
+    @Override
+    public boolean isDatagramPacket(byte[] datagram) {
+        return datagram.toString().charAt(0)=='5';
+    }
+
+    @Override
+    public boolean getDatagramPacket(byte[] _data) {
+        String _datagram;
+        int i;
+        if (this.isDatagramPacket(_data)){
+            datagram=_data;
+            _datagram=datagram.toString();
+            _datagram=_datagram.substring(0,_datagram.length()-1);
+            errorCode =Integer.parseInt(_datagram.substring(1,2));
+            errMsg=_datagram.substring(2,_datagram.length());
+            return true;
+        }
+        else return false;
+    }
+
+    @Override
+    public void buildDataStr() {
+        dataStr=errorCode+errMsg;
+    }
+    
+}
