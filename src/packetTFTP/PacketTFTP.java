@@ -14,22 +14,28 @@ import java.io.UnsupportedEncodingException;
  */
 public abstract class PacketTFTP {
     protected byte[] datagram;
-    protected String dataStr;
-    protected String opcode;
+    protected byte[] dataByte;
+    protected byte[] opcode;
     
     public PacketTFTP (String _opcode){
         opcode=_opcode;
+    }
+    
+    public PacketTFTP(byte[] dataStr, byte[] opcode)
+    {
+        this.dataByte = dataStr;
+        this.opcode = opcode;
     }
 
     public byte[] getDatagram() {
         return datagram;
     }
        
-    public String getDataStr() {
-        return dataStr;
+    public byte[] getDataStr() {
+        return this.dataByte;
     }
 
-    public String getOpcode() {
+    public byte[] getOpcode() {
         return opcode;
     }
     
@@ -37,7 +43,7 @@ public abstract class PacketTFTP {
         String _datagram;
         try{
             buildDataStr();
-            _datagram=opcode+dataStr;
+            _datagram=opcode+dataByte;
             datagram=_datagram.getBytes("ascii");
         }
         catch (UnsupportedEncodingException ex) {

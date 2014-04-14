@@ -6,14 +6,13 @@
 
 package tptftp;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import packetTFTP.PacketTFTP;
+import packetTFTP.*;
 
 /**
  *
@@ -95,26 +94,9 @@ public class Client {
         }
     } 
     
-    public void sendMessage (InetAddress ip,int port, byte[] data){
+    public void sendMessage (InetAddress ip,int port, byte[] data) throws IOException{
         DatagramPacket dp = new DatagramPacket (data, data.length,ip, port);
-        
-        try{
-            this.getSocket().send(dp);
-        }
-        catch (IOException ex) {
-            System.err.println("Impossible d'envoyer le message UDP");
-        }
-    }
-    
-    public void envoiMessage (InetAddress ip,int port,String realData){
-        byte[] data;
-        try{
-            data= realData.getBytes("ascii");
-            this.sendMessage(ip, port, data);
-        }
-        catch (UnsupportedEncodingException ex) {
-            System.err.print("Impossible d'envoyer le message UDP");
-        }
+        this.getSocket().send(dp);
     }
     
     public DatagramPacket recieveMessage (){
@@ -167,6 +149,42 @@ public class Client {
         if (dp==null) return false;
 
         return this.sauvegarderMessage(dp,packet);
+    }
+    
+    public PacketData[] readFile (fileName){
+        try{
+            InputStream ips= new FileInputStream (fileName);
+            byte [] buffer= new byte [512];
+            PacketData packet = new packetData(i,)
+            ips.read(buffer);
+            PacketData[] packets=new PacketData[]();
+        }
+        catch (IOException exc) {
+            if (exc instanceof IOException){
+                System.err.println("Impossible de lire le fichier");
+            }
+            else if (exc instanceof FileNotFoundException){
+                System.err.println("Impossible d'ouvrir le fichier");
+            }
+        }
+    }
+    
+    public int SendFile(String fileName, InetAddress ip){
+        int portServer=69;
+        PacketWRQ wrq = new PacketWRQ ("netascii",fileName);
+        
+        
+        try{
+           wrq.createDatagram();
+           sendMessage(ip,portServer, wrq.getDatagram());
+           reception ();
+        }
+        catch(IOException ex){
+            System.err.println("Impossible d'envoyer la requête TFTP");
+        }
+        
+        
+        return 0;
     }
     
     public Client (InetAddress IP){

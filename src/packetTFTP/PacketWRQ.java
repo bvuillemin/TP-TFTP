@@ -16,6 +16,10 @@ public class PacketWRQ extends PacketRequest {
         super("02");
     }
     
+    public PacketWRQ(String _mode, String _fileName) {
+        super("02",_mode,_fileName);
+    }
+    
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
         return "02".equals(datagram.toString().substring(0,2));
