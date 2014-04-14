@@ -38,9 +38,10 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="Ouvrir" min="-2" pref="136" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="Valider" pref="134" max="32767" attributes="0"/>
+                      <Component id="Valider" max="32767" attributes="0"/>
                   </Group>
                   <Component id="Erreur" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jLabel2" alignment="1" pref="288" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -51,7 +52,9 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" pref="34" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
               <Component id="Erreur" min="-2" pref="66" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane2" min="-2" pref="56" max="-2" attributes="0"/>
@@ -60,7 +63,7 @@
                   <Component id="Valider" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="Ouvrir" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <EmptySpace pref="22" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -111,6 +114,12 @@
           <Color blue="0" green="0" red="ff" type="rgb"/>
         </Property>
         <Property name="horizontalAlignment" type="int" value="0"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="text" type="java.lang.String" value="Pierre Reynaud, Dimitri Rodarie, Benoit Vuillemin"/>
       </Properties>
     </Component>
   </SubComponents>
