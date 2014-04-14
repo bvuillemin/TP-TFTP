@@ -14,6 +14,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import packetTFTP.*;
 
 /**
  *
@@ -26,29 +27,11 @@ public class Client extends Machine {
         super (IP);
     }
     
-    public String scanText () {
-        BufferedReader entree = new BufferedReader( new InputStreamReader(System.in)); 
-        try {
-            return entree.readLine();
-        }
-        catch (IOException ex) {
-            System.err.println("Impossible de lire la saisie");
-        }
-        return null;
-    }
-    
-    public boolean receptionClient (DatagramPacket dp) throws UnsupportedEncodingException{
-        byte[] buffer = new byte[100];
+    public boolean receptionClient (DatagramPacket dp,PacketTFTP packet){
         dp=this.recieveMessage();
         if (dp==null) return false;
-        //Sauvegarde des données
-        this.sauvegarderMessage(dp);
-        
-        //Affichage
-        System.out.println(this.getReceptionData());
-        System.out.println( "IP : " + this.getReceptionIP().toString());
-        System.out.println( "Port : " + this.getReceptionPort());
-        return true;
+
+        return this.sauvegarderMessage(dp,packet);
     }
     
     /**
@@ -67,15 +50,15 @@ public class Client extends Machine {
         DatagramPacket dp= new DatagramPacket (client.getBuffer(), client.getBuffer().length);
         
         //Envoi du premier message au serveur
-        String realData = "hello seveur RX302";
-        client.envoiMessage(ipServeur, portServeur, realData);
+        PacketRRQ rrq= new PacketRRQ("","ascii");
+        rrq.createDatagram();
+        client.sendMessage(ipServeur, portServeur, rrq.getDatagram());
         
         //Reception 
-        client.receptionClient(dp);
+        PacketData receptionData = new PacketData();
+        client.receptionClient(dp,receptionData);
         
-        //Envoi du message scanné
-        realData=client.scanText();
-        client.envoiMessage(ipServeur, portServeur, realData);
+        client.sendMessage(ipServeur, portServeur, receptionData.getDatagram());
         
         //Reception 
         client.receptionClient(dp);

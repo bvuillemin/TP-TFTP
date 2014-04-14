@@ -13,6 +13,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import packetTFTP.PacketTFTP;
 
 /**
  *
@@ -25,6 +26,7 @@ public class Machine {
     private DatagramSocket socket;
     private InetAddress receptionIP;
     private String receptionData;
+    private int receptionPort;
 
     public String getReceptionData() {
         return receptionData;
@@ -49,7 +51,6 @@ public class Machine {
     public void setReceptionPort(int receptionPort) {
         this.receptionPort = receptionPort;
     }
-    private int receptionPort;
 
     public InetAddress getAdresseIP() {
         return adresseIP;
@@ -88,7 +89,6 @@ public class Machine {
         try{
             socket = new DatagramSocket (portUDP, adresseIP);
             socket.setSoTimeout(20000);
-            // suite du programme
         }
         catch (SocketException ex) {
             System.err.println("Port déjà occupé");
@@ -136,15 +136,22 @@ public class Machine {
         return dp;
     }
     
-    public void sauvegarderMessage(DatagramPacket dp) throws UnsupportedEncodingException{
+    public boolean sauvegarderMessage(DatagramPacket dp,PacketTFTP packet){
         receptionIP=dp.getAddress();
         receptionPort=dp.getPort();
-        receptionData=new String(dp.getData(),"ascii");
+        try{
+            receptionData=new String(dp.getData(),"ascii");
+            return packet.getDatagramPacket(dp.getData());
+        }
+        catch(UnsupportedEncodingException ex){
+            System.err.println("Impossible de sauvegarder le message UDP");
+        }
+        return false;
     }
 
-    static int scanPorts(int debut, int nb) {
+    static int scanPorts(int debut, int fin) {
         DatagramSocket port;
-        for (int i = debut; i <= debut+nb; i++) {
+        for (int i = debut; i <= fin; i++) {
             try {
                 port = new DatagramSocket(i);
                 return i;
@@ -159,7 +166,7 @@ public class Machine {
         adresseIP=IP;
         portUDP = scanPorts(1024,1500);
         receptionPort = 0;
-        buffer=new byte[100];
+        buffer=new byte[512];
         initSocket ();
     }
 }
