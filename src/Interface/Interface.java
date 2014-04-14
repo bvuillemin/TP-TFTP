@@ -21,7 +21,7 @@ public class Interface extends javax.swing.JFrame {
     public Interface() {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
     }
 
     /**
@@ -39,6 +39,7 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
         jScrollPane2 = new javax.swing.JScrollPane();
         TextPane = new javax.swing.JTextPane();
         Valider = new javax.swing.JButton();
+        Erreur = new javax.swing.JLabel();
 
         fileChooser.setDialogTitle("Choisissez le fichier à envoyer");
 
@@ -58,6 +59,15 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
         jScrollPane2.setViewportView(TextPane);
 
         Valider.setText("Valider");
+        Valider.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValiderActionPerformed(evt);
+            }
+        });
+
+        Erreur.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        Erreur.setForeground(new java.awt.Color(255, 0, 0));
+        Erreur.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -67,9 +77,12 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Ouvrir, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Valider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Ouvrir, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(Valider, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))
+                    .addComponent(Erreur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -77,12 +90,14 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(89, 89, 89)
-                .addComponent(Ouvrir)
+                .addGap(47, 47, 47)
+                .addComponent(Erreur, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(Valider)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Valider)
+                    .addComponent(Ouvrir))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -90,18 +105,32 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
     }// </editor-fold>//GEN-END:initComponents
 
     private void OuvrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OuvrirActionPerformed
+        Erreur.setText("");
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
                 TextPane.setText(file.getAbsolutePath());
             } catch (Exception ex) {
-                System.out.println("problem accessing file" + file.getAbsolutePath());
+                System.out.println("Problème d'accès au fichier" + file.getAbsolutePath());
             }
         } else {
-            System.out.println("File access cancelled by user.");
+            System.out.println("Annulé.");
         }
     }//GEN-LAST:event_OuvrirActionPerformed
+
+    private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
+        if ((TextPane.getText() == null) || (TextPane.getText().equals(""))) {
+            Erreur.setText("Aucun fichier sélectionné");
+        } else {
+            File f = new File(TextPane.getText());
+            if (f.exists()) {
+                //Lancer la fonction de connexion
+            } else {
+                Erreur.setText("Fichier non trouvé");
+            }
+        }
+    }//GEN-LAST:event_ValiderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -139,6 +168,7 @@ this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize()
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Erreur;
     private javax.swing.JButton Ouvrir;
     private javax.swing.JTextPane TextPane;
     private javax.swing.JButton Valider;
