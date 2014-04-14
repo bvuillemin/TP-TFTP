@@ -162,6 +162,13 @@ public class Machine {
         return 0;
     }
     
+    public boolean reception (DatagramPacket dp,PacketTFTP packet){
+        dp=this.recieveMessage();
+        if (dp==null) return false;
+
+        return this.sauvegarderMessage(dp,packet);
+    }
+    
     public Machine (InetAddress IP){
         adresseIP=IP;
         portUDP = scanPorts(1024,1500);
