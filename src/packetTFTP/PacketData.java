@@ -16,7 +16,7 @@ public class PacketData extends PacketTFTP{
     private String data;
     
     public PacketData() {
-        super("3");
+        super("03");
     }
 
     public int getBlock() {
@@ -37,7 +37,7 @@ public class PacketData extends PacketTFTP{
     
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
-        return datagram.toString().charAt(0)=='3' && datagram.toString().length()==512;
+        return "03".equals(datagram.toString().substring(0,2)) && datagram.toString().length()<=512;
     }
 
     @Override

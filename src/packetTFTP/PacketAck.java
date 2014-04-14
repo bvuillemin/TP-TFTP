@@ -15,7 +15,7 @@ public class PacketAck extends PacketTFTP{
     private int block;
     
     public PacketAck() {
-        super("4");
+        super("04");
     }
 
     public int getBlock() {
@@ -28,7 +28,7 @@ public class PacketAck extends PacketTFTP{
     
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
-        return datagram.toString().charAt(0)=='4';
+        return "04".equals(datagram.toString().substring(0,2));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PacketAck extends PacketTFTP{
 
     @Override
     public void buildDataStr() {
-        dataStr=block;
+        dataStr=Integer.toString(block);
     }
     
 }

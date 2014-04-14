@@ -13,11 +13,11 @@ package packetTFTP;
 public class PacketWRQ extends PacketRequest {
     
     public PacketWRQ() {
-        super("2");
+        super("02");
     }
     
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
-        return datagram.toString().charAt(0)=='2';
+        return "02".equals(datagram.toString().substring(0,2));
     }
 }

@@ -13,15 +13,15 @@ package packetTFTP;
 public class PacketRRQ extends PacketRequest{
     
     public PacketRRQ() {
-        super("1");
+        super("01");
     }
     
     public PacketRRQ(String _mode, String _fileName) {
-        super("1",_mode,_fileName);
+        super("01",_mode,_fileName);
     }
     
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
-        return datagram.toString().charAt(0)=='1';
+        return "01".equals(datagram.toString().substring(0,2));
     }
 }

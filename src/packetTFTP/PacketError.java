@@ -16,7 +16,7 @@ public class PacketError extends PacketTFTP{
     private String errMsg;
     
     public PacketError() {
-        super("5");
+        super("05");
     }
 
     public int getErrorCode() {
@@ -37,7 +37,7 @@ public class PacketError extends PacketTFTP{
     
     @Override
     public boolean isDatagramPacket(byte[] datagram) {
-        return datagram.toString().charAt(0)=='5';
+        return "05".equals(datagram.toString().substring(0,2));
     }
 
     @Override
