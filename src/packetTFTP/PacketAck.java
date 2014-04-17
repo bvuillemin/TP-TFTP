@@ -45,7 +45,7 @@ public class PacketAck extends PacketTFTP{
     }
 
     @Override
-    public void buildDataStr() {
+    public void buildDataByte() {
         dataStr=Integer.toString(block);
     }
     

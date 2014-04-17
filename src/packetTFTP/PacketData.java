@@ -13,7 +13,7 @@ package packetTFTP;
 public class PacketData extends PacketTFTP{
 
     private int block;
-    private String data;
+    private byte[] data;
     
     public PacketData() {
         super("03");
@@ -27,11 +27,11 @@ public class PacketData extends PacketTFTP{
         this.block = block;
     }
 
-    public String getData() {
+    public byte[] getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = data;
     }
     
@@ -55,8 +55,17 @@ public class PacketData extends PacketTFTP{
     }
 
     @Override
-    public void buildDataStr() {
-        dataStr=block+data;
+    public void buildDataByte() {
+        
+        try {
+            int length = Integer.toString(block).length();
+            dataByte=new byte[length + data.length];
+            System.arraycopy(Integer.toString(block).getBytes("ascii"), 0, dataByte, 0, dataByte.length);
+            System.arraycopy(data, 0, dataByte,length, data.length);
+        }
+        catch(Exception ex){
+            System.out.println("Impossible de convertir la requête en byte[]");
+        }
     }
     
 }

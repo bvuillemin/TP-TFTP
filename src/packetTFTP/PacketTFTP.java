@@ -39,23 +39,15 @@ public abstract class PacketTFTP {
     }
 
     public void createDatagram() {
-        //String _datagram;
-        //try {
-            buildDataStr();
-            datagram = new byte[opcode.length + dataByte.length];
-            System.arraycopy(opcode, 0, datagram, 0, opcode.length);
-            System.arraycopy(dataByte, 0, datagram, dataByte.length, dataByte.length);
-            //_datagram = opcode + dataByte;
-            //datagram = _datagram.getBytes("ascii");
-        /*} catch (UnsupportedEncodingException ex) {
-            System.err.print("Impossible de créer le packet TFTP");
-        }*/
-
+        buildDataByte();
+        datagram = new byte[opcode.length + dataByte.length];
+        System.arraycopy(opcode, 0, datagram, 0, opcode.length);
+        System.arraycopy(dataByte, 0, datagram, dataByte.length, dataByte.length);
     }
 
     public abstract boolean isDatagramPacket(byte[] datagram);
 
     public abstract boolean getDatagramPacket(byte[] _data);
 
-    public abstract void buildDataStr();
+    public abstract void buildDataByte();
 }

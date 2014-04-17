@@ -60,7 +60,13 @@ public abstract class PacketRequest extends PacketTFTP{
     }
     
     @Override
-    public void buildDataStr(){
-        dataStr=fileName+"0"+mode+"0";
+    public void buildDataByte(){
+        String dataStr= fileName+"0"+mode+"0";
+        try {
+            dataByte=dataStr.getBytes("ascii");
+        }
+        catch(Exception ex){
+            System.out.println("Impossible de convertir la requête en byte[]");
+        }
     }
 }

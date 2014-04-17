@@ -56,8 +56,14 @@ public class PacketError extends PacketTFTP{
     }
 
     @Override
-    public void buildDataStr() {
-        dataStr=errorCode+errMsg;
+    public void buildDataByte() {
+       String dataStr=errorCode+errMsg;
+       try {
+            dataByte=dataStr.getBytes("ascii");
+        }
+        catch(Exception ex){
+            System.out.println("Impossible de convertir le packet erreur en byte[]");
+        }
     }
     
 }
