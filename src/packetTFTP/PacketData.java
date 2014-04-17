@@ -48,7 +48,13 @@ public class PacketData extends PacketTFTP{
             datagram=_data;
             _datagram=datagram.toString();
             block =Integer.parseInt(_datagram.substring(1,2));
-            data=_datagram.substring(2,_datagram.length());
+            try{
+                data=_datagram.substring(2,_datagram.length()).getBytes("ascii");
+            }
+            catch(Exception ex)
+            {
+                System.out.println("Impossible de convertir le packet erreur en byte[]");
+            }
             return true;
         }
         else return false;
@@ -59,8 +65,7 @@ public class PacketData extends PacketTFTP{
         
         try {
             int length = Integer.toString(block).length();
-            dataByte=new byte[length + data.length];
-            System.arraycopy(Integer.toString(block).getBytes("ascii"), 0, dataByte, 0, dataByte.length);
+            dataByte=Integer.toString(block).getBytes("ascii");
             System.arraycopy(data, 0, dataByte,length, data.length);
         }
         catch(Exception ex){
