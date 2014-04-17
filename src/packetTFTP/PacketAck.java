@@ -6,6 +6,9 @@
 
 package packetTFTP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  *
  * @author Dimitri
@@ -15,7 +18,7 @@ public class PacketAck extends PacketTFTP{
     private int block;
     
     public PacketAck() {
-        super("04");
+        super(4);
     }
 
     public int getBlock() {
@@ -46,12 +49,7 @@ public class PacketAck extends PacketTFTP{
 
     @Override
     public void buildDataByte() {
-        try{
-            dataByte=Integer.toString(block).getBytes();
-        }
-        catch(Exception ex){
-            
-        }
+        dataByte = intToByte(block);
     }
     
 }

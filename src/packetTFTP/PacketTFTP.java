@@ -5,7 +5,9 @@
  */
 package packetTFTP;
 
-import java.io.UnsupportedEncodingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  *
@@ -15,13 +17,13 @@ public abstract class PacketTFTP {
 
     protected byte[] datagram;
     protected byte[] dataByte;
-    protected byte[] opcode;
+    protected int opcode;
 
-    public PacketTFTP(String _opcode) {
-        opcode = _opcode.getBytes();
+    public PacketTFTP(int _opcode) {
+        opcode = _opcode;
     }
 
-    public PacketTFTP(byte[] dataStr, byte[] opcode) {
+    public PacketTFTP(byte[] dataStr, int opcode) {
         this.dataByte = dataStr;
         this.opcode = opcode;
     }
@@ -34,17 +36,31 @@ public abstract class PacketTFTP {
         return this.dataByte;
     }
 
-    public byte[] getOpcode() {
+    public int getOpcode() {
         return opcode;
     }
 
     public void createDatagram() {
         buildDataByte();
-        datagram = new byte[opcode.length + dataByte.length];
-        System.arraycopy(opcode, 0, datagram, 0, opcode.length);
-        System.arraycopy(dataByte, 0, datagram, dataByte.length, dataByte.length);
+        try {
+            byte[] opcodeByte = intToByte(opcode);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(opcodeByte);
+            outputStream.write(dataByte);
+            datagram = outputStream.toByteArray();
+        }
+        catch(IOException ex){
+            System.out.println("Impossible de créer le datagram tftp : "+ ex);
+        }
+        
     }
-
+    
+    public byte[] intToByte(int i) {
+        ByteBuffer data = ByteBuffer.allocate(2);
+        data.putShort((short)i);
+        return data.array();
+    }
+    
     public abstract boolean isDatagramPacket(byte[] datagram);
 
     public abstract boolean getDatagramPacket(byte[] _data);

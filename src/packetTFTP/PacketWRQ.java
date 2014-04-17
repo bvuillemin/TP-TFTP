@@ -13,11 +13,11 @@ package packetTFTP;
 public class PacketWRQ extends PacketRequest {
     
     public PacketWRQ() {
-        super("02");
+        super(2);
     }
     
     public PacketWRQ(String _mode, String _fileName) {
-        super("02",_mode,_fileName);
+        super(2,_mode,_fileName);
     }
     
     @Override

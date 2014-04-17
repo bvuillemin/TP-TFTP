@@ -6,6 +6,9 @@
 
 package packetTFTP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  *
  * @author Dimitri
@@ -16,7 +19,7 @@ public class PacketData extends PacketTFTP{
     private byte[] data;
     
     public PacketData() {
-        super("03");
+        super(3);
     }
 
     public int getBlock() {
@@ -62,14 +65,15 @@ public class PacketData extends PacketTFTP{
 
     @Override
     public void buildDataByte() {
-        
         try {
-            int length = Integer.toString(block).length();
-            dataByte=Integer.toString(block).getBytes("ascii");
-            System.arraycopy(data, 0, dataByte,length, data.length);
+            byte[] blockByte = intToByte(block);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(blockByte);
+            outputStream.write(data);
+            dataByte = outputStream.toByteArray();
         }
-        catch(Exception ex){
-            System.out.println("Impossible de convertir la requête en byte[]");
+        catch(IOException ex){
+            System.out.println("Impossible de convertir la requête en byte[] : "+ex);
         }
     }
     

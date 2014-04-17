@@ -6,6 +6,9 @@
 
 package packetTFTP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  *
  * @author Dimitri
@@ -16,7 +19,7 @@ public class PacketError extends PacketTFTP{
     private String errMsg;
     
     public PacketError() {
-        super("05");
+        super(5);
     }
 
     public int getErrorCode() {
@@ -57,12 +60,16 @@ public class PacketError extends PacketTFTP{
 
     @Override
     public void buildDataByte() {
-       String dataStr=errorCode+errMsg;
        try {
-            dataByte=dataStr.getBytes("ascii");
+            byte[] msgByte = errMsg.getBytes("ascii");
+            byte[] codeByte = intToByte(errorCode);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(msgByte);
+            outputStream.write(codeByte);
+            dataByte = outputStream.toByteArray();
         }
-        catch(Exception ex){
-            System.out.println("Impossible de convertir le packet erreur en byte[]");
+        catch(IOException ex){
+            System.out.println("Impossible de convertir le packet erreur en byte[] : " + ex);
         }
     }
     

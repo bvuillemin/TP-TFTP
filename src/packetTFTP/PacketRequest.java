@@ -6,6 +6,9 @@
 
 package packetTFTP;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  *
  * @author Dimitri
@@ -15,13 +18,13 @@ public abstract class PacketRequest extends PacketTFTP{
     protected String fileName;
     protected String mode;
     
-    public PacketRequest(String _opcode) {
+    public PacketRequest(int _opcode) {
         super(_opcode);
         mode = "";
         fileName="";
     }
     
-    public PacketRequest(String _opcode,String _mode, String _fileName) {
+    public PacketRequest(int _opcode,String _mode, String _fileName) {
         super(_opcode);
         mode = _mode;
         fileName=_fileName;
@@ -61,12 +64,18 @@ public abstract class PacketRequest extends PacketTFTP{
     
     @Override
     public void buildDataByte(){
-        String dataStr= fileName+"0"+mode+"0";
         try {
-            dataByte=dataStr.getBytes("ascii");
+            byte[] fileByte = fileName.getBytes("ascii");
+            byte[] modeByte = mode.getBytes("ascii");
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            outputStream.write(fileByte);
+            outputStream.write((byte)0);
+            outputStream.write(modeByte);
+            outputStream.write((byte)0);
+            dataByte = outputStream.toByteArray();
         }
-        catch(Exception ex){
-            System.out.println("Impossible de convertir la requête en byte[]");
+        catch(IOException ex){
+            System.out.println("Impossible de convertir la requête en byte[] : " + ex);
         }
     }
 }
