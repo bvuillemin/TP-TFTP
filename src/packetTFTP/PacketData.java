@@ -21,7 +21,14 @@ public class PacketData extends PacketTFTP{
     public PacketData() {
         super(3);
     }
-
+    
+    public PacketData(int _block,byte[] _data) {
+        super(3);
+        this.block = _block;
+        this.data = _data;
+        createDatagram();
+    }
+    
     public int getBlock() {
         return block;
     }

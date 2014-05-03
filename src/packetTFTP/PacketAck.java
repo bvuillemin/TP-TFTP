@@ -20,7 +20,13 @@ public class PacketAck extends PacketTFTP{
     public PacketAck() {
         super(4);
     }
-
+    
+    public PacketAck(int _block) {
+        super(4);
+        this.block = _block;
+        createDatagram();
+    }
+    
     public int getBlock() {
         return block;
     }

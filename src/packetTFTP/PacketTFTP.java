@@ -26,13 +26,14 @@ public abstract class PacketTFTP {
     public PacketTFTP(byte[] dataStr, int opcode) {
         this.dataByte = dataStr;
         this.opcode = opcode;
+        createDatagram();
     }
 
     public byte[] getDatagram() {
         return datagram;
     }
 
-    public byte[] getDataStr() {
+    public byte[] getDataByte() {
         return this.dataByte;
     }
 
@@ -40,7 +41,7 @@ public abstract class PacketTFTP {
         return opcode;
     }
 
-    public void createDatagram() {
+    protected void createDatagram() {
         buildDataByte();
         try {
             byte[] opcodeByte = intToByte(opcode);

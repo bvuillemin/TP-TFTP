@@ -21,7 +21,14 @@ public class PacketError extends PacketTFTP{
     public PacketError() {
         super(5);
     }
-
+    
+    public PacketError(int _errorCode,String _errMsg) {
+        super(5);
+        this.errorCode = _errorCode;
+        this.errMsg = _errMsg;
+        createDatagram();
+    }
+    
     public int getErrorCode() {
         return errorCode;
     }

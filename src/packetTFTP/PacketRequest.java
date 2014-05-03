@@ -28,6 +28,7 @@ public abstract class PacketRequest extends PacketTFTP{
         super(_opcode);
         mode = _mode;
         fileName=_fileName;
+        createDatagram();
     }
     public String getFileName(){
         return fileName;
