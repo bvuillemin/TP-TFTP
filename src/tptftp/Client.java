@@ -26,62 +26,6 @@ public class Client {
     private InetAddress receptionIP;
     private String receptionData;
     private int receptionPort;
-
-    public String getReceptionData() {
-        return receptionData;
-    }
-
-    public void setReceptionData(String receptionData) {
-        this.receptionData = receptionData;
-    }
-    
-    public InetAddress getReceptionIP() {
-        return receptionIP;
-    }
-
-    public void setReceptionIP(InetAddress receptionIP) {
-        this.receptionIP = receptionIP;
-    }
-
-    public int getReceptionPort() {
-        return receptionPort;
-    }
-
-    public void setReceptionPort(int receptionPort) {
-        this.receptionPort = receptionPort;
-    }
-
-    public InetAddress getAdresseIP() {
-        return adresseIP;
-    }
-
-    public void setAdresseIP(InetAddress adresseIP) {
-        this.adresseIP = adresseIP;
-    }
-
-    public int getPortUDP() {
-        return portUDP;
-    }
-
-    public void setPortUDP(int portUDP) {
-        this.portUDP = portUDP;
-    }
-
-    public byte[] getBuffer() {
-        return buffer;
-    }
-
-    public void setBuffer(byte[] buffer) {
-        this.buffer = buffer;
-    }
-    
-    public DatagramSocket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(DatagramSocket socket) {
-        this.socket = socket;
-    }
     
     public void initSocket (){
         

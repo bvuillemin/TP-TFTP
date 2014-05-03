@@ -40,4 +40,10 @@ public abstract class EchangeTFTP implements Runnable {
             System.out.println("Impossible d'envoyer le packet TFTP");
         }
     }
+    
+    public byte[] receivePacket (){
+        byte[] buffer = new byte[1024];
+        DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
+        return buffer;
+    }
 }

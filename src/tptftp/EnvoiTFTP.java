@@ -8,10 +8,11 @@ package tptftp;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import packetTFTP.PacketWRQ;
+import packetTFTP.*;
 
 /**
  *
@@ -39,14 +40,49 @@ public class EnvoiTFTP extends EchangeTFTP {
         }
     }
     
-    public void tryWRQ (){
-        for (int i=0; i<NB_TENTATIVE;i++){
-            sendWRQ();
+    public boolean receiveAckWRQ(){
+        byte[] buffer = new byte[1024];
+        buffer=receivePacket();
+        return false;
+    }
+    
+    public void sendDataPacket(int block,byte[] data){
+        PacketData packet= new PacketData (block, data);
+        try {
+            sendPacket(packet.getDatagram());
+        } 
+        catch (IOException ex) {
+            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    public boolean tryWRQ (){
+        for (int i=0; i<NB_TENTATIVE;i++){
+           sendWRQ();
+           if (receiveAckWRQ()){
+               return true;
+           }
+        }
+        return false;
+    }
+    
+    public void trySendData (){
+        for (int i=0; i<NB_TENTATIVE;i++){
+           sendWRQ();
+        } 
+    }
+    
+    public void sendData (){
+        byte[] buffer=new byte[512]; 
+    }
+    
     public int SendFile(){
-        tryWRQ();
+        if (tryWRQ()){
+            
+        }
+        else{
+            
+        }
         return 0;
     }
     
