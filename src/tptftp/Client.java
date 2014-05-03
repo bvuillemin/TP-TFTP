@@ -169,23 +169,7 @@ public class Client {
         }
     }
     
-    public int SendFile(String fileName, InetAddress ip){
-        int portServer=69;
-        PacketWRQ wrq = new PacketWRQ ("netascii",fileName);
-        
-        
-        try{
-           wrq.createDatagram();
-           sendMessage(ip,portServer, wrq.getDatagram());
-           reception ();
-        }
-        catch(IOException ex){
-            System.err.println("Impossible d'envoyer la requête TFTP");
-        }
-        
-        
-        return 0;
-    }
+    
     
     public Client (InetAddress IP){
         adresseIP=IP;
