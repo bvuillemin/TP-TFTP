@@ -40,7 +40,14 @@ public class EnvoiTFTP extends EchangeTFTP {
             try {
                 while (f.read(buffer)!=1){
                     data=new PacketData(i, buffer);
-                    if (trySendPacket(data,i)) break;
+                    trySendPacket(data,i);
+                }
+                int taille=f.available();
+                if (taille>0){
+                    buffer=new byte[taille];
+                    f.read(buffer);
+                    data=new PacketData(i, buffer);
+                    trySendPacket(data,i);
                 }
             } catch (IOException ex) {
                 //impossible de lire

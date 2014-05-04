@@ -39,6 +39,19 @@ public abstract class EchangeTFTP implements Runnable {
         }
     }
     
+    static int scanPorts(int debut, int fin) {
+        DatagramSocket port;
+        for (int i = debut; i <= fin; i++) {
+            try {
+                port = new DatagramSocket(i);
+                return i;
+            } 
+            catch (SocketException e) {
+            }
+        }
+        return 0;
+    }
+    
     public void sendPacket (PacketTFTP packet){
         byte[] data = packet.getDatagram();
         DatagramPacket dp = new DatagramPacket (data, data.length,adresseIP, portUDP);
@@ -57,6 +70,9 @@ public abstract class EchangeTFTP implements Runnable {
             socket.receive(dtg);
         } catch (IOException ex) {
             Logger.getLogger(EchangeTFTP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (dtg.getPort()!=portUDP){
+            portUDP=dtg.getPort();
         }
         return dtg.getData();
     }
