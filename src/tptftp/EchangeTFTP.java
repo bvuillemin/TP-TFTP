@@ -9,6 +9,7 @@ package tptftp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -83,6 +84,11 @@ public abstract class EchangeTFTP implements Runnable {
         return PacketAck.isNAckPacket(buffer,n);
     }
     
+    public void sendAck(int n){
+        PacketAck ack = new PacketAck(n);
+        sendPacket(ack);
+    }
+    
     public boolean trySendPacket (PacketTFTP packet, int n){
          for (int i=0; i<NB_TENTATIVE;i++){
            sendPacket(packet);
@@ -93,7 +99,20 @@ public abstract class EchangeTFTP implements Runnable {
         return false;
     }
     
-    public FileInputStream openFile (File file){
+    public boolean tryReceiveDataPacket (PacketData packet, int n){
+        byte[] buffer = new byte[1024]; 
+        for (int i=0; i<NB_TENTATIVE;i++){
+           buffer=receivePacket();
+           if (PacketData.isNDataPacket(buffer,n)){
+               sendAck(n);
+               packet = new PacketData (n,buffer);
+               return true;
+           }
+        }
+        return false;
+    }
+    
+    public FileInputStream openReadFile (File file){
         try {
             return new FileInputStream(file);
         }
@@ -103,7 +122,27 @@ public abstract class EchangeTFTP implements Runnable {
         return null;
     }
     
-    public boolean closeFile (FileInputStream f){
+    public FileOutputStream openWriteFile (File file){
+        try {
+            return new FileOutputStream(file);
+        }
+        catch (FileNotFoundException ex) {
+            //impossible d'ouvrir le fichier
+        }
+        return null;
+    }
+    
+    public boolean closeReadFile (FileInputStream f){
+        try {
+            f.close();
+            return true;
+        } catch (IOException ex) {
+            //impossible de fermer le fichier
+            return false;
+        }
+    }
+    
+    public boolean closeWriteFile (FileOutputStream f){
         try {
             f.close();
             return true;

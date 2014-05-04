@@ -32,7 +32,7 @@ public class EnvoiTFTP extends EchangeTFTP {
     }
     
     public void sendData (){
-        FileInputStream f=openFile(file);
+        FileInputStream f=openReadFile(file);
         PacketData data;
         if (f!=null){
             byte[] buffer=new byte[512];
@@ -41,6 +41,7 @@ public class EnvoiTFTP extends EchangeTFTP {
                 while (f.read(buffer)!=1){
                     data=new PacketData(i, buffer);
                     trySendPacket(data,i);
+                    i++;
                 }
                 int taille=f.available();
                 if (taille>0){
@@ -53,7 +54,7 @@ public class EnvoiTFTP extends EchangeTFTP {
                 //impossible de lire
             }
         }
-        closeFile(f);
+        closeReadFile(f);
     }
     
     public int SendFile(){

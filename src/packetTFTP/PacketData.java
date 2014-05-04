@@ -45,15 +45,25 @@ public class PacketData extends PacketTFTP{
         this.data = data;
     }
     
-    public static boolean isDatagramPacket(byte[] datagram) {
+    public static boolean isDataPacket(byte[] datagram) {
         return "03".equals(datagram.toString().substring(0,2)) && datagram.toString().length()<=516;
     }
-
+    
+    public static boolean isNDataPacket(byte[] datagram, int number){
+        if (isDataPacket(datagram)){
+            String _datagram=datagram.toString();
+            if(Integer.parseInt(_datagram.substring(1,2))==number){
+                return false;
+            }
+        }
+        return false;
+    }
+    
     @Override
     public boolean getDatagramPacket(byte[] _data) {
         String _datagram;
         int i;
-        if (this.isDatagramPacket(_data)){
+        if (this.isDataPacket(_data)){
             datagram=_data;
             _datagram=datagram.toString();
             block =Integer.parseInt(_datagram.substring(1,2));
