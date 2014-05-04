@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tptftp;
 
 import java.io.File;
@@ -21,55 +15,54 @@ import packetTFTP.*;
  * @author Dimitri
  */
 public class EnvoiTFTP extends EchangeTFTP {
-    
-    private File file;
-    
-    public EnvoiTFTP (InetAddress _ip, File _file){
+
+    public EnvoiTFTP(InetAddress _ip) {
         super();
-        this.portUDP=69;
-        this.adresseIP=_ip;
-        this.file=_file;
+        this.portUDP = 69;
+        this.adresseIP = _ip;
     }
-    
-    public void sendData (){
-        FileInputStream f=openReadFile(file);
+
+    public void sendData(String nomFichier) {
         PacketData data;
-        if (f!=null){
-            byte[] buffer=new byte[512];
-            int i=1;
-            try {
-                while (f.read(buffer)!=1){
-                    data=new PacketData(i, buffer);
-                    trySendPacket(data,i);
-                    i++;
+        int b;
+        byte[] buffer = new byte[512];
+        int i = 1;
+
+        try {
+            FileInputStream fe = new FileInputStream(nomFichier);
+            for (int j = 0; j < buffer.length; j++) {
+                b = fe.read();
+                if (b == -1) {
+                    break;
                 }
-                int taille=f.available();
-                if (taille>0){
-                    buffer=new byte[taille];
-                    f.read(buffer);
-                    data=new PacketData(i, buffer);
-                    trySendPacket(data,i);
-                }
-            } catch (IOException ex) {
-                //impossible de lire
+                buffer[i] = (byte) b;
             }
+            data = new PacketData(i, buffer);
+            trySendPacket(data, i);
+            i++;
+            
+            //Pour l'instant envoi seulement du début du fichier
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        closeReadFile(f);
     }
-    
-    public int SendFile(){
-        PacketWRQ packet = new PacketWRQ ("netascii",file.getName());
-        if (trySendPacket(packet,0)){
-            sendData();
-        }
-        else{
+
+    public int SendFile(String nomFichier, String adresse) {
+        
+        PacketWRQ packet = new PacketWRQ("netascii", nomFichier);
+        if (trySendPacket(packet, 0)) {
+            sendData(nomFichier);
+        } else {
             //server not reachable
         }
         return 0;
     }
-    
+
     @Override
     public void run() {
-        SendFile();
+        SendFile("", "");
     }
 }

@@ -7,7 +7,12 @@ package Interface;
 
 import java.awt.*;
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import tptftp.*;
 
 /**
  *
@@ -127,15 +132,21 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_OuvrirActionPerformed
 
     private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
-        if ((TextPane.getText() == null) || (TextPane.getText().equals(""))) {
-            Erreur.setText("Aucun fichier sélectionné");
-        } else {
-            File f = new File(TextPane.getText());
-            if (f.exists()) {
-                //Lancer la fonction de connexion
+        try {
+            EnvoiTFTP envoi = new EnvoiTFTP(InetAddress.getLocalHost());
+            if ((TextPane.getText() == null) || (TextPane.getText().equals(""))) {
+                Erreur.setText("Aucun fichier sélectionné");
             } else {
-                Erreur.setText("Fichier non trouvé");
-            }
+                File f = new File(TextPane.getText());
+                if (f.exists()) {
+                    envoi.SendFile(TextPane.getText(), null);
+                    //Lancer la fonction de connexion
+                } else {
+                    Erreur.setText("Fichier non trouvé");
+                }
+            } 
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_ValiderActionPerformed
 
