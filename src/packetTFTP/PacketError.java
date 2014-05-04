@@ -45,8 +45,7 @@ public class PacketError extends PacketTFTP{
         this.errMsg = ErrMsg;
     }
     
-    @Override
-    public boolean isDatagramPacket(byte[] datagram) {
+    public static boolean isErrorPacket(byte[] datagram) {
         return "05".equals(datagram.toString().substring(0,2));
     }
 
@@ -54,7 +53,7 @@ public class PacketError extends PacketTFTP{
     public boolean getDatagramPacket(byte[] _data) {
         String _datagram;
         int i;
-        if (this.isDatagramPacket(_data)){
+        if (this.isErrorPacket(_data)){
             datagram=_data;
             _datagram=datagram.toString();
             _datagram=_datagram.substring(0,_datagram.length()-1);

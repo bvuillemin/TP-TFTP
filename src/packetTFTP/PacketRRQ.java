@@ -20,8 +20,16 @@ public class PacketRRQ extends PacketRequest{
         super(1,_mode,_fileName);
     }
     
-    @Override
-    public boolean isDatagramPacket(byte[] datagram) {
+    public static boolean isRRQPacket(byte[] datagram) {
         return "01".equals(datagram.toString().substring(0,2));
+    }
+    
+    @Override
+    public boolean getDatagramPacket(byte[] _data) {
+        if (this.isRRQPacket(_data)){
+            getRequestPacket(_data);
+            return true;
+        }
+        else return false;
     }
 }

@@ -46,21 +46,16 @@ public abstract class PacketRequest extends PacketTFTP{
         this.mode = mode;
     }
 
-    @Override
-    public boolean getDatagramPacket(byte[] _data) {
+    public void getRequestPacket(byte[] _data) {
         String _datagram;
         int i;
-        if (this.isDatagramPacket(_data)){
-            datagram=_data;
-            _datagram=datagram.toString();
-            _datagram=_datagram.substring(0,_datagram.length()-1);
-            
-            i=_datagram.lastIndexOf('0');
-            mode=_datagram.substring(i,_datagram.length());
-            fileName=_datagram.substring(1,i);
-            return true;
-        }
-        else return false;
+        datagram=_data;
+        _datagram=datagram.toString();
+        _datagram=_datagram.substring(0,_datagram.length()-1);
+
+        i=_datagram.lastIndexOf('0');
+        mode=_datagram.substring(i,_datagram.length());
+        fileName=_datagram.substring(1,i);
     }
     
     @Override

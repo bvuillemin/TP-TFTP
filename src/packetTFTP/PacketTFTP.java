@@ -61,8 +61,6 @@ public abstract class PacketTFTP {
         data.putShort((short)i);
         return data.array();
     }
-    
-    public abstract boolean isDatagramPacket(byte[] datagram);
 
     public abstract boolean getDatagramPacket(byte[] _data);
 

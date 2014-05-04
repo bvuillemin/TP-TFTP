@@ -20,8 +20,16 @@ public class PacketWRQ extends PacketRequest {
         super(2,_mode,_fileName);
     }
     
-    @Override
-    public boolean isDatagramPacket(byte[] datagram) {
+    public static boolean isWRQPacket(byte[] datagram) {
         return "02".equals(datagram.toString().substring(0,2));
+    }
+
+    @Override
+    public boolean getDatagramPacket(byte[] _data) {
+        if (this.isWRQPacket(_data)){
+            getRequestPacket(_data);
+            return true;
+        }
+        else return false;
     }
 }
