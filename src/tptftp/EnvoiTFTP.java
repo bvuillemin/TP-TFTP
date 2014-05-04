@@ -7,6 +7,8 @@
 package tptftp;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -21,7 +23,6 @@ import packetTFTP.*;
 public class EnvoiTFTP extends EchangeTFTP {
     
     private File file;
-    final int NB_TENTATIVE=3;
     
     public EnvoiTFTP (InetAddress _ip, File _file){
         super();
@@ -30,58 +31,31 @@ public class EnvoiTFTP extends EchangeTFTP {
         this.file=_file;
     }
     
-    public void sendWRQ (){
-        PacketWRQ wrq = new PacketWRQ ("netascii",file.getName());
-        try {
-            sendPacket(wrq.getDatagram());
-        } 
-        catch (IOException ex) {
-            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public boolean receiveAckWRQ(){
-        byte[] buffer = new byte[1024];
-        buffer=receivePacket();
-        return false;
-    }
-    
-    public void sendDataPacket(int block,byte[] data){
-        PacketData packet= new PacketData (block, data);
-        try {
-            sendPacket(packet.getDatagram());
-        } 
-        catch (IOException ex) {
-            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public boolean tryWRQ (){
-        for (int i=0; i<NB_TENTATIVE;i++){
-           sendWRQ();
-           if (receiveAckWRQ()){
-               return true;
-           }
-        }
-        return false;
-    }
-    
-    public void trySendData (){
-        for (int i=0; i<NB_TENTATIVE;i++){
-           sendWRQ();
-        } 
-    }
-    
     public void sendData (){
-        byte[] buffer=new byte[512]; 
+        FileInputStream f=openFile(file);
+        PacketData data;
+        if (f!=null){
+            byte[] buffer=new byte[512];
+            int i=1;
+            try {
+                while (f.read(buffer)!=1){
+                    data=new PacketData(i, buffer);
+                    if (trySendPacket(data,i)) break;
+                }
+            } catch (IOException ex) {
+                //impossible de lire
+            }
+        }
+        closeFile(f);
     }
     
     public int SendFile(){
-        if (tryWRQ()){
-            
+        PacketWRQ packet = new PacketWRQ ("netascii",file.getName());
+        if (trySendPacket(packet,0)){
+            sendData();
         }
         else{
-            
+            //server not reachable
         }
         return 0;
     }

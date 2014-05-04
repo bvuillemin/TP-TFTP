@@ -38,7 +38,17 @@ public class PacketAck extends PacketTFTP{
     public static boolean isAckPacket(byte[] datagram) {
         return "04".equals(datagram.toString().substring(0,2));
     }
-
+    
+    public static boolean isNAckPacket(byte[] datagram, int number){
+        if (isAckPacket(datagram)){
+            String _datagram=datagram.toString();
+            if(Integer.parseInt(_datagram.substring(1,2))==number){
+                return false;
+            }
+        }
+        return false;
+    }
+    
     @Override
     public boolean getDatagramPacket(byte[] _data) {
         String _datagram;

@@ -6,11 +6,17 @@
 
 package tptftp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import packetTFTP.*;
 
 /**
  *
@@ -20,6 +26,8 @@ public abstract class EchangeTFTP implements Runnable {
     protected InetAddress adresseIP;
     protected int portUDP;
     protected DatagramSocket socket;
+    
+    final int NB_TENTATIVE=3;
     
     public EchangeTFTP (){
         try{
@@ -31,7 +39,8 @@ public abstract class EchangeTFTP implements Runnable {
         }
     }
     
-    public void sendPacket (byte[] data) throws IOException{
+    public void sendPacket (PacketTFTP packet){
+        byte[] data = packet.getDatagram();
         DatagramPacket dp = new DatagramPacket (data, data.length,adresseIP, portUDP);
         try{
             this.socket.send(dp);
@@ -44,6 +53,47 @@ public abstract class EchangeTFTP implements Runnable {
     public byte[] receivePacket (){
         byte[] buffer = new byte[1024];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
-        return buffer;
+        try {
+            socket.receive(dtg);
+        } catch (IOException ex) {
+            Logger.getLogger(EchangeTFTP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return dtg.getData();
+    }
+    
+    public boolean receiveAck(int n){
+        byte[] buffer = new byte[1024];
+        buffer=receivePacket();
+        return PacketAck.isNAckPacket(buffer,n);
+    }
+    
+    public boolean trySendPacket (PacketTFTP packet, int n){
+         for (int i=0; i<NB_TENTATIVE;i++){
+           sendPacket(packet);
+           if (receiveAck(n)){
+               return true;
+           }
+        }
+        return false;
+    }
+    
+    public FileInputStream openFile (File file){
+        try {
+            return new FileInputStream(file);
+        }
+        catch (FileNotFoundException ex) {
+            //impossible d'ouvrir le fichier
+        }
+        return null;
+    }
+    
+    public boolean closeFile (FileInputStream f){
+        try {
+            f.close();
+            return true;
+        } catch (IOException ex) {
+            //impossible de fermer le fichier
+            return false;
+        }
     }
 }
