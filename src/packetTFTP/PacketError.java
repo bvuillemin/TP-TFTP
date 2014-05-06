@@ -49,6 +49,10 @@ public class PacketError extends PacketTFTP{
         return "05".equals(datagram.toString().substring(0,2));
     }
 
+    public static boolean isNErrorPacket(byte[] datagram, int n) {
+        return isErrorPacket(datagram);
+    }
+    
     @Override
     public boolean getDatagramPacket(byte[] _data) {
         String _datagram;

@@ -80,7 +80,12 @@ public abstract class EchangeTFTP implements Runnable {
         PacketAck ack = new PacketAck(n);
         sendPacket(ack);
     }
-
+    
+    public void sendError(int n, String message) {
+        PacketError err = new PacketError(n, message);
+        sendPacket(err);
+    }
+    
     public boolean trySendPacket(PacketTFTP packet, int n) {
         for (int i = 0; i < NB_TENTATIVE; i++) {
             sendPacket(packet);
@@ -95,10 +100,15 @@ public abstract class EchangeTFTP implements Runnable {
         byte[] buffer = new byte[1024];
         for (int i = 0; i < NB_TENTATIVE; i++) {
             buffer = receivePacket();
-            if (PacketData.isNDataPacket(buffer, n)) {
-                sendAck(n);
-                packet = new PacketData(n, buffer);
-                return true;
+            if (PacketData.isNDataPacket(buffer, n)|| PacketError.isNErrorPacket(buffer,n)) {
+                if (PacketError.isNErrorPacket(buffer,n)){
+                    sendError(n,"Problème reception packet");
+                }
+                else{
+                    sendAck(n);
+                    packet = new PacketData(n, buffer);
+                    return true; 
+                }
             }
         }
         return false;
