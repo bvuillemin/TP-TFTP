@@ -40,12 +40,19 @@ public class Interface extends javax.swing.JFrame {
 
         fileChooser = new javax.swing.JFileChooser();
         jLabel1 = new javax.swing.JLabel();
-        Ouvrir = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        TextPane = new javax.swing.JTextPane();
-        Valider = new javax.swing.JButton();
-        Erreur = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        ErreurEnvoyer = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        TextPaneEnvoyer = new javax.swing.JTextPane();
+        SelectionnerFichier = new javax.swing.JButton();
+        ValiderEnvoyer = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        ValiderRecevoir = new javax.swing.JToggleButton();
+        ErreurRecevoir = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        TextPaneRecevoir = new javax.swing.JTextPane();
 
         fileChooser.setDialogTitle("Choisissez le fichier à envoyer");
 
@@ -55,28 +62,98 @@ public class Interface extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("TP TFTP");
 
-        Ouvrir.setText("FIchier...");
-        Ouvrir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OuvrirActionPerformed(evt);
-            }
-        });
-
-        jScrollPane2.setViewportView(TextPane);
-
-        Valider.setText("Valider");
-        Valider.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ValiderActionPerformed(evt);
-            }
-        });
-
-        Erreur.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        Erreur.setForeground(new java.awt.Color(255, 0, 0));
-        Erreur.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Pierre Reynaud, Dimitri Rodarie, Benoit Vuillemin");
+
+        ErreurEnvoyer.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        ErreurEnvoyer.setForeground(new java.awt.Color(255, 0, 0));
+        ErreurEnvoyer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        jScrollPane2.setViewportView(TextPaneEnvoyer);
+
+        SelectionnerFichier.setText("FIchier...");
+        SelectionnerFichier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SelectionnerFichierActionPerformed(evt);
+            }
+        });
+
+        ValiderEnvoyer.setText("Valider");
+        ValiderEnvoyer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValiderEnvoyerActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ErreurEnvoyer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(SelectionnerFichier, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ValiderEnvoyer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(ErreurEnvoyer, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SelectionnerFichier)
+                    .addComponent(ValiderEnvoyer))
+                .addGap(0, 7, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Envoyer", jPanel1);
+
+        ValiderRecevoir.setText("Valider");
+        ValiderRecevoir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ValiderRecevoirActionPerformed(evt);
+            }
+        });
+
+        ErreurRecevoir.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        ErreurRecevoir.setForeground(new java.awt.Color(255, 0, 0));
+        ErreurRecevoir.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        jScrollPane3.setViewportView(TextPaneRecevoir);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ValiderRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ErreurRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ErreurRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ValiderRecevoir)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Recevoir", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,70 +162,65 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Ouvrir, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Valider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(Erreur, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addContainerGap(25, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addGap(35, 35, 35)
-                .addComponent(Erreur, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Valider)
-                    .addComponent(Ouvrir))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void OuvrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OuvrirActionPerformed
-        Erreur.setText("");
+    private void SelectionnerFichierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectionnerFichierActionPerformed
+        ErreurEnvoyer.setText("");
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
-                TextPane.setText(file.getAbsolutePath());
+                TextPaneEnvoyer.setText(file.getAbsolutePath());
             } catch (Exception ex) {
                 System.out.println("Problème d'accès au fichier" + file.getAbsolutePath());
             }
         } else {
             System.out.println("Annulé.");
         }
-    }//GEN-LAST:event_OuvrirActionPerformed
+    }//GEN-LAST:event_SelectionnerFichierActionPerformed
 
-    private void ValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderActionPerformed
+    private void ValiderEnvoyerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderEnvoyerActionPerformed
         try {
             EnvoiTFTP envoi = new EnvoiTFTP(InetAddress.getLocalHost());
-            if ((TextPane.getText() == null) || (TextPane.getText().equals(""))) {
-                Erreur.setText("Aucun fichier sélectionné");
+            if ((TextPaneEnvoyer.getText() == null) || (TextPaneEnvoyer.getText().equals(""))) {
+                ErreurEnvoyer.setText("Aucun fichier sélectionné");
             } else {
-                File f = new File(TextPane.getText());
+                File f = new File(TextPaneEnvoyer.getText());
                 if (f.exists()) {
-                    envoi.SendFile(TextPane.getText(), null);
+                    envoi.SendFile(TextPaneEnvoyer.getText(), null);
                     //Lancer la fonction de connexion
                 } else {
-                    Erreur.setText("Fichier non trouvé");
+                    ErreurEnvoyer.setText("Fichier non trouvé");
                 }
             } 
         } catch (UnknownHostException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_ValiderActionPerformed
+    }//GEN-LAST:event_ValiderEnvoyerActionPerformed
+
+    private void ValiderRecevoirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderRecevoirActionPerformed
+        if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
+                ErreurRecevoir.setText("Aucun fichier sélectionné");
+            } else {}
+    }//GEN-LAST:event_ValiderRecevoirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -186,13 +258,20 @@ public class Interface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Erreur;
-    private javax.swing.JButton Ouvrir;
-    private javax.swing.JTextPane TextPane;
-    private javax.swing.JButton Valider;
+    private javax.swing.JLabel ErreurEnvoyer;
+    private javax.swing.JLabel ErreurRecevoir;
+    private javax.swing.JButton SelectionnerFichier;
+    private javax.swing.JTextPane TextPaneEnvoyer;
+    private javax.swing.JTextPane TextPaneRecevoir;
+    private javax.swing.JButton ValiderEnvoyer;
+    private javax.swing.JToggleButton ValiderRecevoir;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
