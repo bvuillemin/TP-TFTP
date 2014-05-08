@@ -46,13 +46,13 @@ public class PacketData extends PacketTFTP{
     }
     
     public static boolean isDataPacket(byte[] datagram) {
-        return "03".equals(datagram.toString().substring(0,2)) && datagram.toString().length()<=516;
+        return 3==getOpcode(datagram) && datagram.toString().length()<=516;
     }
     
     public static boolean isNDataPacket(byte[] datagram, int number){
         if (isDataPacket(datagram)){
-            String _datagram=datagram.toString();
-            if(Integer.parseInt(_datagram.substring(1,2))==number){
+            int value = datagram[2] & 0xff;
+            if(value==number){
                 return false;
             }
         }

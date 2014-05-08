@@ -9,6 +9,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import packetTFTP.*;
@@ -28,7 +29,7 @@ public abstract class EchangeTFTP implements Runnable {
     public EchangeTFTP() {
         try {
             socket = new DatagramSocket();
-            socket.setSoTimeout(20000);
+            socket.setSoTimeout(2000);
         } catch (SocketException ex) {
             System.err.println("Impossible de créer le socket");
         }
@@ -71,9 +72,7 @@ public abstract class EchangeTFTP implements Runnable {
     }
 
     public boolean receiveAck(int n) {
-        byte[] buffer = new byte[1024];
-        buffer = receivePacket();
-        return PacketAck.isNAckPacket(buffer, n);
+        return PacketAck.isAckPacket(receivePacket());
     }
 
     public void sendAck(int n) {
@@ -88,6 +87,7 @@ public abstract class EchangeTFTP implements Runnable {
     
     public boolean trySendPacket(PacketTFTP packet, int n) {
         for (int i = 0; i < NB_TENTATIVE; i++) {
+            System.out.println("Envoi du packet "+n+" ...");
             sendPacket(packet);
             if (receiveAck(n)) {
                 return true;
@@ -99,7 +99,6 @@ public abstract class EchangeTFTP implements Runnable {
     public boolean tryReceiveDataPacket(PacketData packet, int n) {
         byte[] buffer = new byte[1024];
         for (int i = 0; i < NB_TENTATIVE; i++) {
-            buffer = receivePacket();
             if (PacketData.isNDataPacket(buffer, n)|| PacketError.isNErrorPacket(buffer,n)) {
                 if (PacketError.isNErrorPacket(buffer,n)){
                     sendError(n,"Problème reception packet");
@@ -114,20 +113,20 @@ public abstract class EchangeTFTP implements Runnable {
         return false;
     }
 
-    public FileInputStream openReadFile(File file) {
+    public FileInputStream openReadFile(String file) {
         try {
             return new FileInputStream(file);
         } catch (FileNotFoundException ex) {
-            //impossible d'ouvrir le fichier
+            System.out.println("Impossible d'ouvrir le fichier en lecture");
         }
         return null;
     }
 
-    public FileOutputStream openWriteFile(File file) {
+    public FileOutputStream openWriteFile(String file) {
         try {
             return new FileOutputStream(file);
         } catch (FileNotFoundException ex) {
-            //impossible d'ouvrir le fichier
+            System.out.println("Impossible d'ouvrir le fichier en écriture");
         }
         return null;
     }
@@ -137,7 +136,7 @@ public abstract class EchangeTFTP implements Runnable {
             f.close();
             return true;
         } catch (IOException ex) {
-            //impossible de fermer le fichier
+            System.out.println("Impossible de fermer le fichier en lecture");
             return false;
         }
     }
@@ -147,7 +146,7 @@ public abstract class EchangeTFTP implements Runnable {
             f.close();
             return true;
         } catch (IOException ex) {
-            //impossible de fermer le fichier
+            System.out.println("Impossible de fermer le fichier en écriture");
             return false;
         }
     }

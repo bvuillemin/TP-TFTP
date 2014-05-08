@@ -8,6 +8,8 @@ package packetTFTP;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -61,7 +63,17 @@ public abstract class PacketTFTP {
         data.putShort((short)i);
         return data.array();
     }
-
+    
+    public static int getOpcode(byte[] _dtg) {
+        int value = 0;
+        for(int i=0; i<2; i++)
+        {
+            value = value << 8;
+            value += _dtg[i] & 0xff;
+        }
+        return value;
+    }
+    
     public abstract boolean getDatagramPacket(byte[] _data);
 
     public abstract void buildDataByte();

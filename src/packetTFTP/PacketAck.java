@@ -6,9 +6,6 @@
 
 package packetTFTP;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 /**
  *
  * @author Dimitri
@@ -36,14 +33,14 @@ public class PacketAck extends PacketTFTP{
     }
     
     public static boolean isAckPacket(byte[] datagram) {
-        return "04".equals(datagram.toString().substring(0,2));
+        return 4==(getOpcode(datagram));
     }
     
     public static boolean isNAckPacket(byte[] datagram, int number){
         if (isAckPacket(datagram)){
-            String _datagram=datagram.toString();
-            if(Integer.parseInt(_datagram.substring(1,2))==number){
-                return false;
+            int value = datagram[2] & 0xff;
+            if (value==number){
+                return true;
             }
         }
         return false;
@@ -55,8 +52,7 @@ public class PacketAck extends PacketTFTP{
         int i;
         if (this.isAckPacket(_data)){
             datagram=_data;
-            _datagram=datagram.toString();
-            block =Integer.parseInt(_datagram.substring(1,2));
+            block= _data[2] & 0xff;
             return true;
         }
         else return false;

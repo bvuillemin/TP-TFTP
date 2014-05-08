@@ -23,33 +23,39 @@ public class EnvoiTFTP extends EchangeTFTP {
         this.adresseIP = _ip;
     }
 
-    public void sendData(String nomFichier) {
+    public boolean sendData(String nomFichier) {
         PacketData data;
         int b = 0;
         byte[] buffer = new byte[512];
         int i = 1;
-
         try {
-            while(b != -1){
-                FileInputStream fe = new FileInputStream(nomFichier);
-                for (int j = 0; j < buffer.length; j++) {
-                    b = fe.read();
-                    if (b == -1) {
-                        break;
-                    }
-                    buffer[i] = (byte) b;
+            FileInputStream fe = openReadFile(nomFichier);
+            while (fe.read(buffer) != -1) {
+                data=new PacketData(i,buffer);
+                if (!trySendPacket(data, i)) {
+                    System.out.println("Impossible d'envoyer le packet "+ i);
+                    return false;
                 }
-                data = new PacketData(i, buffer);
-                trySendPacket(data, i);
                 i++;
             }
-            
-            //Pour l'instant envoi seulement du début du fichier
-
+            if (fe.available() >= 0) {
+                buffer=new byte[fe.available()];
+                fe.read(buffer);
+                data = new PacketData(i,buffer);
+                if (!trySendPacket(data, i)) {
+                    System.out.println("Impossible d'envoyer le packet "+ i);
+                    return false;
+                }
+            }
+            closeReadFile (fe);
+            return true;
         } catch (FileNotFoundException ex) {
+            System.out.println("Fichier non trouvé : ");
             Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         } catch (IOException ex) {
             Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
@@ -59,11 +65,16 @@ public class EnvoiTFTP extends EchangeTFTP {
         } catch (UnknownHostException ex) {
             Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
         }
-        PacketWRQ packet = new PacketWRQ("netascii", nomFichier);
+        File f = new File (nomFichier);
+        String name=f.getName();
+        PacketWRQ packet = new PacketWRQ("netascii", name);
         if (trySendPacket(packet, 0)) {
-            sendData(nomFichier);
+            System.out.println("Demande d'envoi acceptée");
+            if (!sendData(nomFichier)){
+                System.out.println("L'envoi a échoué");
+            }
         } else {
-            //server not reachable
+            System.out.println("Serveur inaccessible");
         }
         return 0;
     }

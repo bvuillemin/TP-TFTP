@@ -46,7 +46,7 @@ public class PacketError extends PacketTFTP{
     }
     
     public static boolean isErrorPacket(byte[] datagram) {
-        return "05".equals(datagram.toString().substring(0,2));
+        return 5==getOpcode(datagram);
     }
 
     public static boolean isNErrorPacket(byte[] datagram, int n) {

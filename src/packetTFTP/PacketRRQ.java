@@ -21,7 +21,7 @@ public class PacketRRQ extends PacketRequest{
     }
     
     public static boolean isRRQPacket(byte[] datagram) {
-        return "01".equals(datagram.toString().substring(0,2));
+        return 1==getOpcode(datagram);
     }
     
     @Override

@@ -27,7 +27,7 @@ public class ReceptionTFTP extends EchangeTFTP {
     }
     
     public void receiveData(){
-        FileOutputStream f =openWriteFile(file);
+        FileOutputStream f =openWriteFile(file.getAbsolutePath());
         PacketData data;
         if (f!=null){
             int i=1;
