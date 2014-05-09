@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
@@ -25,7 +24,6 @@ public class EnvoiTFTP extends EchangeTFTP {
 
     public boolean sendData(String nomFichier) {
         PacketData data;
-        int b = 0;
         byte[] buffer = new byte[512];
         int i = 1;
         try {

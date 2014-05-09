@@ -6,7 +6,6 @@
 
 package tptftp;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,40 +16,49 @@ import packetTFTP.*;
  * @author Dimitri
  */
 public class ReceptionTFTP extends EchangeTFTP {
-    private File file;
+    private String fileName;
+    private final String PATH= "C:\\Users\\Dimitri\\Documents\\Cours\\Info\\Algo\\TP-TFTP\\Serveur\\";
     
-    public ReceptionTFTP (InetAddress _ip, File _file, int _port){
+    public ReceptionTFTP (InetAddress _ip, String _file){
         super();
-        this.portUDP=_port;
+        this.portUDP=69;
         this.adresseIP=_ip;
-        this.file=_file;
+        this.fileName=_file;
     }
     
-    public void receiveData(){
-        FileOutputStream f =openWriteFile(file.getAbsolutePath());
-        PacketData data;
+    public void receiveData(PacketData data){
+        FileOutputStream f =openWriteFile(PATH + fileName);
         if (f!=null){
-            int i=1;
             try {
-                data=new PacketData(i, new byte[512]);
-                while (tryReceiveDataPacket(data,i)){
-                    f.write(data.getDataByte());
-                    i++;
+                f.write(data.getData());
+                while (!(data.getData().length<512)&&tryReceiveDataPacket(data)){
+                    f.write(data.getData());
                 }
             } catch (IOException ex) {
-                //impossible d'écrire
+                System.out.println("Impossible d'écrire dans le fichier "+ fileName);
             }
         }
         closeWriteFile(f);
     }
     
+    public boolean trySendRRQ(PacketRRQ packet, PacketData data) {
+        for (int i = 0; i < NB_TENTATIVE; i++) {
+            sendPacket(packet);
+            if (tryReceiveDataPacket(data)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public int ReceiveFile(){
-        PacketRRQ packet = new PacketRRQ ("netascii",file.getName());
-        if (trySendPacket(packet,0)){
-            receiveData();
+        PacketRRQ packet = new PacketRRQ ("netascii",fileName);
+        PacketData data = new PacketData ();
+        if (trySendRRQ(packet,data)){
+            receiveData(data);
         }
         else{
-            //server not reachable
+            System.out.println("Serveur inaccessible");
         }
         return 0;
     }

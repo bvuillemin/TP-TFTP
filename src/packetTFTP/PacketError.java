@@ -55,14 +55,13 @@ public class PacketError extends PacketTFTP{
     
     @Override
     public boolean getDatagramPacket(byte[] _data) {
-        String _datagram;
-        int i;
+        byte[]msg=new byte[datagram.length-3];
         if (this.isErrorPacket(_data)){
             datagram=_data;
-            _datagram=datagram.toString();
-            _datagram=_datagram.substring(0,_datagram.length()-1);
-            errorCode =Integer.parseInt(_datagram.substring(1,2));
-            errMsg=_datagram.substring(2,_datagram.length());
+            opcode=5;
+            errorCode =datagram[2] & 0xff;
+            System.arraycopy(datagram, 3, msg, 0, datagram.length-3);
+            errMsg=msg.toString();
             return true;
         }
         else return false;
@@ -82,5 +81,9 @@ public class PacketError extends PacketTFTP{
             System.out.println("Impossible de convertir le packet erreur en byte[] : " + ex);
         }
     }
-    
+
+    @Override
+    public void afficherPacket() {
+        System.out.println("Opcode : " + opcode + "    ErrCode : " + errorCode + "    ErrMsg : " + errMsg +"   Datagram : " + datagram.toString());
+    }
 }

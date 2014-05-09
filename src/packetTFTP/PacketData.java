@@ -20,6 +20,7 @@ public class PacketData extends PacketTFTP{
     
     public PacketData() {
         super(3);
+        this.data = new byte[512];
     }
     
     public PacketData(int _block,byte[] _data) {
@@ -61,19 +62,12 @@ public class PacketData extends PacketTFTP{
     
     @Override
     public boolean getDatagramPacket(byte[] _data) {
-        String _datagram;
-        int i;
         if (this.isDataPacket(_data)){
             datagram=_data;
-            _datagram=datagram.toString();
-            block =Integer.parseInt(_datagram.substring(1,2));
-            try{
-                data=_datagram.substring(2,_datagram.length()).getBytes("ascii");
-            }
-            catch(Exception ex)
-            {
-                System.out.println("Impossible de convertir le packet erreur en byte[]");
-            }
+            opcode=3;
+            block = datagram[2];
+            data=new byte[datagram.length-4];
+            System.arraycopy(datagram, 4, data, 0, datagram.length-4);
             return true;
         }
         else return false;
@@ -91,6 +85,10 @@ public class PacketData extends PacketTFTP{
         catch(IOException ex){
             System.out.println("Impossible de convertir la requête en byte[] : "+ex);
         }
+    }    
+
+    @Override
+    public void afficherPacket() {
+        System.out.println("Opcode : "+opcode+"    Block : " + block + "   Data : "+data.toString()+ "    Datagram : "+datagram.toString());
     }
-    
 }

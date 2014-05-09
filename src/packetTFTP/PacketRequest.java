@@ -50,6 +50,7 @@ public abstract class PacketRequest extends PacketTFTP{
         String _datagram;
         int i;
         datagram=_data;
+        opcode= getOpcode(datagram);
         _datagram=datagram.toString();
         _datagram=_datagram.substring(0,_datagram.length()-1);
 
@@ -73,5 +74,10 @@ public abstract class PacketRequest extends PacketTFTP{
         catch(IOException ex){
             System.out.println("Impossible de convertir la requête en byte[] : " + ex);
         }
+    }
+    
+    @Override
+    public void afficherPacket() {
+        System.out.println("Opcode : "+opcode+ "   Datagram : "+datagram.toString());
     }
 }

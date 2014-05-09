@@ -77,4 +77,6 @@ public abstract class PacketTFTP {
     public abstract boolean getDatagramPacket(byte[] _data);
 
     public abstract void buildDataByte();
+    
+    public abstract void afficherPacket();
 }

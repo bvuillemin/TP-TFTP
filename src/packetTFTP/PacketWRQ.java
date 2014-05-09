@@ -27,6 +27,7 @@ public class PacketWRQ extends PacketRequest {
     @Override
     public boolean getDatagramPacket(byte[] _data) {
         if (this.isWRQPacket(_data)){
+            opcode=2;
             getRequestPacket(_data);
             return true;
         }

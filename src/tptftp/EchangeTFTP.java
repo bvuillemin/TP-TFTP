@@ -9,7 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import packetTFTP.*;
@@ -29,7 +28,7 @@ public abstract class EchangeTFTP implements Runnable {
     public EchangeTFTP() {
         try {
             socket = new DatagramSocket();
-            socket.setSoTimeout(2000);
+            socket.setSoTimeout(5000);
         } catch (SocketException ex) {
             System.err.println("Impossible de créer le socket");
         }
@@ -70,6 +69,19 @@ public abstract class EchangeTFTP implements Runnable {
         }
         return dtg.getData();
     }
+    public byte[] receiveDataPacket() {
+        byte[] buffer = new byte[516];
+        DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
+        try {
+            socket.receive(dtg);
+        } catch (IOException ex) {
+            Logger.getLogger(EchangeTFTP.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (dtg.getPort() != portUDP) {
+            portUDP = dtg.getPort();
+        }
+        return dtg.getData();
+    }
 
     public boolean receiveAck(int n) {
         return PacketAck.isAckPacket(receivePacket());
@@ -77,6 +89,7 @@ public abstract class EchangeTFTP implements Runnable {
 
     public void sendAck(int n) {
         PacketAck ack = new PacketAck(n);
+        ack.afficherPacket();
         sendPacket(ack);
     }
     
@@ -87,7 +100,6 @@ public abstract class EchangeTFTP implements Runnable {
     
     public boolean trySendPacket(PacketTFTP packet, int n) {
         for (int i = 0; i < NB_TENTATIVE; i++) {
-            System.out.println("Envoi du packet "+n+" ...");
             sendPacket(packet);
             if (receiveAck(n)) {
                 return true;
@@ -96,16 +108,13 @@ public abstract class EchangeTFTP implements Runnable {
         return false;
     }
 
-    public boolean tryReceiveDataPacket(PacketData packet, int n) {
-        byte[] buffer = new byte[1024];
+    public boolean tryReceiveDataPacket(PacketData packet) {
+        byte[] buffer;
         for (int i = 0; i < NB_TENTATIVE; i++) {
-            if (PacketData.isNDataPacket(buffer, n)|| PacketError.isNErrorPacket(buffer,n)) {
-                if (PacketError.isNErrorPacket(buffer,n)){
-                    sendError(n,"Problème reception packet");
-                }
-                else{
-                    sendAck(n);
-                    packet = new PacketData(n, buffer);
+            buffer=receiveDataPacket();
+            if (packet.getDatagramPacket(buffer)|| PacketError.isErrorPacket(buffer)) {
+                if (!PacketError.isErrorPacket(buffer)){
+                    sendAck(packet.getBlock());
                     return true; 
                 }
             }

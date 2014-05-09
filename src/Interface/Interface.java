@@ -217,9 +217,17 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_ValiderEnvoyerActionPerformed
 
     private void ValiderRecevoirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderRecevoirActionPerformed
-        if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
+        try {
+            if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
                 ErreurRecevoir.setText("Aucun fichier sélectionné");
-            } else {}
+            }
+            else {
+                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getLocalHost(),TextPaneRecevoir.getText());
+                reception.ReceiveFile();
+            }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_ValiderRecevoirActionPerformed
 
     /**
