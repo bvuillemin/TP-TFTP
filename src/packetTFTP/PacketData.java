@@ -63,27 +63,17 @@ public class PacketData extends PacketTFTP{
     
     @Override
     public boolean getDatagramPacket(byte[] _data) {
-        if (this.isDataPacket(_data)){
-            datagram=_data;
-            opcode=3;
-            int value =0;
-            value = value << 8;
-            value += datagram[2];
-            block=value;
-            
-            vz
-            /*A supprimer*/
-            try {
-                String str = new String(_data, "UTF-8");
-                System.out.println(str);
-            } catch (UnsupportedEncodingException ex) {
-            }
-            
-            data=new byte[datagram.length-4];
-            System.arraycopy(datagram, 4, data, 0, datagram.length-4);
+        if (this.isDataPacket(_data)) {
+            datagram = _data;
+            opcode = 3;
+            block = _data[3];
+
+            data = new byte[datagram.length - 4];
+            System.arraycopy(datagram, 4, data, 0, datagram.length - 4);
             return true;
+        } else {
+            return false;
         }
-        else return false;
     }
 
     @Override
@@ -99,9 +89,4 @@ public class PacketData extends PacketTFTP{
             System.out.println("Impossible de convertir la requête en byte[] : "+ex);
         }
     }    
-
-    @Override
-    public void afficherPacket() {
-        System.out.println("Opcode : "+opcode+"    Block : " + block + "   Data : "+data.toString()+ "    Datagram : "+datagram.toString());
-    }
 }

@@ -49,6 +49,7 @@ public abstract class EchangeTFTP implements Runnable {
 
     public void sendPacket(PacketTFTP packet) {
         byte[] data = packet.getDatagram();
+        
         DatagramPacket dp = new DatagramPacket(data, data.length, adresseIP, portUDP);
         try {
             this.socket.send(dp);

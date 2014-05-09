@@ -17,7 +17,7 @@ import packetTFTP.*;
 public class ReceptionTFTP extends EchangeTFTP {
 
     private String fileName;
-    private final String PATH = "C:\\Users\\Dimitri\\Documents\\Cours\\Info\\Algo\\TP-TFTP\\Serveur\\";
+    private final String PATH = "C:\\Users\\Pierre\\Documents\\";
 
     public ReceptionTFTP(InetAddress _ip, String _file) {
         super();
@@ -25,28 +25,30 @@ public class ReceptionTFTP extends EchangeTFTP {
         this.adresseIP = _ip;
         this.fileName = _file;
     }
-    
+
     public boolean tryReceiveDataPacket(PacketData packet) {
         byte[] buffer;
+        
         for (int i = 0; i < NB_TENTATIVE; i++) {
-            buffer=receiveDataPacket();
-            
-            if (packet.getDatagramPacket(buffer)|| PacketError.isErrorPacket(buffer)) {
-                if (!PacketError.isErrorPacket(buffer)){
+            buffer = receiveDataPacket();
+
+            if (packet.getDatagramPacket(buffer) || PacketError.isErrorPacket(buffer)) {
+                if (!PacketError.isErrorPacket(buffer)) {
                     sendAck(packet.getBlock());
-                    return true; 
+                    return true;
                 }
             }
         }
         return false;
     }
-    
+
     public void receiveData(PacketData data) {
+        data.afficherPacket();
         FileOutputStream f = openWriteFile(PATH + fileName);
         if (f != null) {
             try {
                 f.write(data.getData());
-                while (!(data.getData().length < 512) && tryReceiveDataPacket(data)) {
+                while (data.getData().length >= 516 && tryReceiveDataPacket(data)) {
                     f.write(data.getData());
                 }
             } catch (IOException ex) {

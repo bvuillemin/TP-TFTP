@@ -75,9 +75,4 @@ public abstract class PacketRequest extends PacketTFTP{
             System.out.println("Impossible de convertir la requête en byte[] : " + ex);
         }
     }
-    
-    @Override
-    public void afficherPacket() {
-        System.out.println("Opcode : "+opcode+ "   Datagram : "+datagram.toString());
-    }
 }

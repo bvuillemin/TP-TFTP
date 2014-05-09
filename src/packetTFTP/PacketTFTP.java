@@ -7,7 +7,9 @@ package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,5 +80,13 @@ public abstract class PacketTFTP {
 
     public abstract void buildDataByte();
     
-    public abstract void afficherPacket();
+    public void afficherPacket(){
+        try {
+            if(this.dataByte != null){
+            String str = new String(this.dataByte, "US-ASCII");
+            System.out.println(str + " = " + dataByte.toString());
+            }
+        } catch (UnsupportedEncodingException ex) {
+        }
+    }
 }

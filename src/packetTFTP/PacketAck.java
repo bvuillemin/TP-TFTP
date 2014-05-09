@@ -52,14 +52,7 @@ public class PacketAck extends PacketTFTP {
         if (this.isAckPacket(_data)) {
             datagram = _data;
             opcode = 4;
-            block = _data[2] & 0xff;
-            
-            /*A supprimer*/
-            try {
-                String str = new String(_data, "UTF-8");
-                System.out.println(str);
-            } catch (UnsupportedEncodingException ex) {
-            }
+            block = _data[2] + 0x00;
             
             return true;
         } else {

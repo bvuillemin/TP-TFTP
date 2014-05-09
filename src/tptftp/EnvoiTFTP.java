@@ -67,6 +67,7 @@ public class EnvoiTFTP extends EchangeTFTP {
         String name=f.getName();
         PacketWRQ packet = new PacketWRQ("netascii", name);
         if (trySendPacket(packet, 0)) {
+            packet.afficherPacket();
             System.out.println("Demande d'envoi acceptée");
             if (!sendData(nomFichier)){
                 System.out.println("L'envoi a échoué");
