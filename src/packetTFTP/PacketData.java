@@ -8,6 +8,7 @@ package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
@@ -65,7 +66,19 @@ public class PacketData extends PacketTFTP{
         if (this.isDataPacket(_data)){
             datagram=_data;
             opcode=3;
-            block = datagram[2];
+            int value =0;
+            value = value << 8;
+            value += datagram[2];
+            block=value;
+            
+            vz
+            /*A supprimer*/
+            try {
+                String str = new String(_data, "UTF-8");
+                System.out.println(str);
+            } catch (UnsupportedEncodingException ex) {
+            }
+            
             data=new byte[datagram.length-4];
             System.arraycopy(datagram, 4, data, 0, datagram.length-4);
             return true;

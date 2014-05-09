@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -89,7 +90,6 @@ public abstract class EchangeTFTP implements Runnable {
 
     public void sendAck(int n) {
         PacketAck ack = new PacketAck(n);
-        ack.afficherPacket();
         sendPacket(ack);
     }
     
@@ -103,20 +103,6 @@ public abstract class EchangeTFTP implements Runnable {
             sendPacket(packet);
             if (receiveAck(n)) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean tryReceiveDataPacket(PacketData packet) {
-        byte[] buffer;
-        for (int i = 0; i < NB_TENTATIVE; i++) {
-            buffer=receiveDataPacket();
-            if (packet.getDatagramPacket(buffer)|| PacketError.isErrorPacket(buffer)) {
-                if (!PacketError.isErrorPacket(buffer)){
-                    sendAck(packet.getBlock());
-                    return true; 
-                }
             }
         }
         return false;

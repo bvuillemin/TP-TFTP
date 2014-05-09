@@ -5,6 +5,8 @@
  */
 package packetTFTP;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  *
  * @author Dimitri
@@ -51,6 +53,14 @@ public class PacketAck extends PacketTFTP {
             datagram = _data;
             opcode = 4;
             block = _data[2] & 0xff;
+            
+            /*A supprimer*/
+            try {
+                String str = new String(_data, "UTF-8");
+                System.out.println(str);
+            } catch (UnsupportedEncodingException ex) {
+            }
+            
             return true;
         } else {
             return false;
