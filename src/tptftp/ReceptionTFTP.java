@@ -56,7 +56,6 @@ public class ReceptionTFTP extends EchangeTFTP {
      */
     public void receiveData(PacketData data) throws Exception{
         boolean receptionOK = true;
-        data.afficherPacket();
         FileOutputStream f = openWriteFile(path + fileName);
         if (f != null) {
             try {
