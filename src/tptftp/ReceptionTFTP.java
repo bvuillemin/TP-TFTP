@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tptftp;
 
 import java.io.FileOutputStream;
@@ -10,22 +5,24 @@ import java.io.IOException;
 import java.net.InetAddress;
 import packetTFTP.*;
 
-/**
- *
- * @author Dimitri
- */
 public class ReceptionTFTP extends EchangeTFTP {
 
     private String fileName;
-    private final String PATH = "C:\\Users\\Pierre\\Documents\\";
+    private final String path;
 
-    public ReceptionTFTP(InetAddress _ip, String _file) {
+    public ReceptionTFTP(InetAddress _ip, String _file, String _path) {
         super();
         this.portUDP = 69;
         this.adresseIP = _ip;
         this.fileName = _file;
+        this.path = _path;
     }
 
+    /**
+     * 
+     * @param packet
+     * @return Vrai si la réception s'est effectuée
+     */
     public boolean tryReceiveDataPacket(PacketData packet) {
         byte[] buffer;
         
@@ -44,7 +41,7 @@ public class ReceptionTFTP extends EchangeTFTP {
 
     public void receiveData(PacketData data) {
         data.afficherPacket();
-        FileOutputStream f = openWriteFile(PATH + fileName);
+        FileOutputStream f = openWriteFile(path + fileName);
         if (f != null) {
             try {
                 f.write(data.getData());
