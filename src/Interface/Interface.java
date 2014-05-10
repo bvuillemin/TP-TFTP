@@ -195,10 +195,10 @@ public class Interface extends javax.swing.JFrame {
             try {
                 TextPaneEnvoyer.setText(file.getAbsolutePath());
             } catch (Exception ex) {
-                System.out.println("Problème d'accès au fichier" + file.getAbsolutePath());
+                ErreurEnvoyer.setText("Problème d'accès au fichier" + file.getAbsolutePath());
             }
         } else {
-            System.out.println("Annulé.");
+            ErreurEnvoyer.setText("Annulé.");
         }
     }//GEN-LAST:event_SelectionnerFichierActionPerformed
 
@@ -211,7 +211,13 @@ public class Interface extends javax.swing.JFrame {
             } else {
                 File f = new File(TextPaneEnvoyer.getText());
                 if (f.exists()) {
-                    envoi.SendFile(TextPaneEnvoyer.getText(), null);
+                    int a = envoi.SendFile(TextPaneEnvoyer.getText(), null);
+                    switch (a)
+                    {
+                        case 1 : ErreurEnvoyer.setText("Serveur inaccessible");
+                        case 2 : ErreurEnvoyer.setText("L'envoi a échoué");
+                        case 3 : ErreurEnvoyer.setText("Adresse incorrecte");
+                    }
                 } else {
                     ErreurEnvoyer.setText("Fichier non trouvé");
                 }
@@ -248,10 +254,10 @@ public class Interface extends javax.swing.JFrame {
             try {
                 TextPaneRecevoir1.setText(file.getAbsolutePath());
             } catch (Exception ex) {
-                System.out.println("Problème d'accès au fichier" + file.getAbsolutePath());
+                ErreurEnvoyer.setText("Problème d'accès au fichier" + file.getAbsolutePath());
             }
         } else {
-            System.out.println("Annulé");
+            ErreurEnvoyer.setText("Annulé");
         }
     }//GEN-LAST:event_SelectionnerFichier1ActionPerformed
 
