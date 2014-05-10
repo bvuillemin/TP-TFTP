@@ -71,18 +71,23 @@ public class EnvoiTFTP extends EchangeTFTP {
         File f = new File(nomFichier);
         String name = f.getName();
         PacketWRQ packet = new PacketWRQ("netascii", name);
-        if (trySendPacket(packet, 0)) {
-            packet.afficherPacket();
-            System.out.println("Demande d'envoi acceptée");
-
-            try {
-                sendData(nomFichier);
-            } catch (Exception ex) {
-                System.out.println("L'envoi a échoué");
-                return 2;
+        try {
+            if (trySendPacket(packet, 0)) {
+                packet.afficherPacket();
+                System.out.println("Demande d'envoi acceptée");
+                
+                try {
+                    sendData(nomFichier);
+                } catch (Exception ex) {
+                    System.out.println("L'envoi a échoué");
+                    return 2;
+                }
+                
+            } else {
+                System.out.println("Serveur inaccessible");
+                return 1;
             }
-
-        } else {
+        } catch (Exception ex) {
             System.out.println("Serveur inaccessible");
             return 1;
         }

@@ -54,13 +54,13 @@ public abstract class EchangeTFTP implements Runnable {
         }
     }
 
-    public byte[] receivePacket() {
+    public byte[] receivePacket() throws Exception{
         byte[] buffer = new byte[1024];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
         try {
             socket.receive(dtg);
         } catch (IOException ex) {
-            Logger.getLogger(EchangeTFTP.class.getName()).log(Level.SEVERE, null, ex);
+            throw new Exception("Erreur de réception");
         }
         if (dtg.getPort() != portUDP) {
             portUDP = dtg.getPort();
@@ -82,8 +82,12 @@ public abstract class EchangeTFTP implements Runnable {
         return dtg.getData();
     }
 
-    public boolean receiveAck(int n) {
-        return PacketAck.isAckPacket(receivePacket());
+    public boolean receiveAck(int n) throws Exception{
+        try {
+            return PacketAck.isAckPacket(receivePacket());
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     public void sendAck(int n) {
@@ -96,11 +100,15 @@ public abstract class EchangeTFTP implements Runnable {
         sendPacket(err);
     }
     
-    public boolean trySendPacket(PacketTFTP packet, int n) {
+    public boolean trySendPacket(PacketTFTP packet, int n) throws Exception {
         for (int i = 0; i < NB_TENTATIVE; i++) {
             sendPacket(packet);
-            if (receiveAck(n)) {
-                return true;
+            try {
+                if (receiveAck(n)) {
+                    return true;
+                }
+            } catch (Exception ex) {
+                throw ex;
             }
         }
         return false;
