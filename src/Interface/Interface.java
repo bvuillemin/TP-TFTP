@@ -284,16 +284,16 @@ public class Interface extends javax.swing.JFrame {
             a = reception.ReceiveFile();
             switch (a) {
                 case 0:
-                    ErreurEnvoyer.setText("Réception effectuée");
+                    ErreurRecevoir.setText("Réception effectuée");
                     break;
                 case 1:
-                    ErreurEnvoyer.setText("Erreur dans l'envoi de la demande");
+                    ErreurRecevoir.setText("Erreur dans l'envoi de la demande");
                     break;
                 case 2:
-                    ErreurEnvoyer.setText("Erreur dans la réception des données");
+                    ErreurRecevoir.setText("Erreur dans la réception des données");
                     break;
                 default:
-                    ErreurEnvoyer.setText(Integer.toString(a));
+                    ErreurRecevoir.setText(Integer.toString(a));
                     break;
             }
         }
