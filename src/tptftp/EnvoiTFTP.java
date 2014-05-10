@@ -18,7 +18,12 @@ public class EnvoiTFTP extends EchangeTFTP {
         this.adresseIP = _ip;
     }
 
-    public boolean sendData(String nomFichier) {
+    /**
+     * Va s'occuper de l'envoi du fichier uniquement
+     * @param nomFichier
+     * @throws Exception
+     */
+    public void sendData(String nomFichier) throws Exception {
         PacketData data;
         byte[] buffer = new byte[512];
         int i = 1;
@@ -27,8 +32,7 @@ public class EnvoiTFTP extends EchangeTFTP {
             while (fe.read(buffer) != -1) {
                 data = new PacketData(i, buffer);
                 if (!trySendPacket(data, i)) {
-                    System.out.println("Impossible d'envoyer le packet " + i);
-                    return false;
+                    throw new Exception("Impossible d'envoyer le packet " + i);
                 }
                 i++;
             }
@@ -37,36 +41,31 @@ public class EnvoiTFTP extends EchangeTFTP {
                 fe.read(buffer);
                 data = new PacketData(i, buffer);
                 if (!trySendPacket(data, i)) {
-                    System.out.println("Impossible d'envoyer le packet " + i);
-                    return false;
+                    throw new Exception("Impossible d'envoyer le packet " + i);
                 }
             }
             closeReadFile(fe);
-            return true;
         } catch (FileNotFoundException ex) {
-            System.out.println("Fichier non trouvé : ");
-            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            throw new Exception("Fichier non trouvé");
         } catch (IOException ex) {
-            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            throw new Exception("Erreur I/O");
         }
     }
-    
+
     /**
      * Primitive de service pour envoyer un fichier
+     *
      * @param nomFichier
      * @param adresse
-     * @return 0 L'envoi s'est bien effectué
-     *         1 Serveur inaccessible
-     *         2 L'envoi a échoué
+     * @return 0 L'envoi s'est bien effectué 
+     *         1 Serveur inaccessible 
+     *         2 L'envoi a échoué 
      *         3 L'adresse fournie n'est pas correcte
      */
     public int SendFile(String nomFichier, String adresse) {
         try {
             adresseIP = InetAddress.getByName(adresse);
-        } 
-        catch (UnknownHostException ex) {
+        } catch (UnknownHostException ex) {
             return 3;
         }
         File f = new File(nomFichier);
@@ -75,10 +74,14 @@ public class EnvoiTFTP extends EchangeTFTP {
         if (trySendPacket(packet, 0)) {
             packet.afficherPacket();
             System.out.println("Demande d'envoi acceptée");
-            if (!sendData(nomFichier)) {
+
+            try {
+                sendData(nomFichier);
+            } catch (Exception ex) {
                 System.out.println("L'envoi a échoué");
                 return 2;
             }
+
         } else {
             System.out.println("Serveur inaccessible");
             return 1;
