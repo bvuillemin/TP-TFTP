@@ -12,10 +12,9 @@ import packetTFTP.*;
 
 public class EnvoiTFTP extends EchangeTFTP {
 
-    public EnvoiTFTP(InetAddress _ip) {
+    public EnvoiTFTP() {
         super();
         this.portUDP = 69;
-        this.adresseIP = _ip;
     }
 
     /**

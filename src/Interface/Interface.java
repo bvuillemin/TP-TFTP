@@ -224,7 +224,7 @@ public class Interface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-   
+
     private void SelectionnerFichierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectionnerFichierActionPerformed
         ErreurEnvoyer.setText("");
         int returnVal = fileChooser.showOpenDialog(this);
@@ -240,63 +240,72 @@ public class Interface extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SelectionnerFichierActionPerformed
 
-    
+
     private void ValiderEnvoyerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderEnvoyerActionPerformed
-        try {
-            EnvoiTFTP envoi = new EnvoiTFTP(InetAddress.getByName(Adresse.getText()));
-            if ((TextPaneEnvoyer.getText() == null) || (TextPaneEnvoyer.getText().equals(""))) {
-                ErreurEnvoyer.setText("Aucun fichier sélectionné");
-            } else {
-                File f = new File(TextPaneEnvoyer.getText());
-                int a;
-                if (f.exists()) {
-                    a = envoi.SendFile(TextPaneEnvoyer.getText(), Adresse.getText());
-                    switch (a)
-                    {
-                        case 0 : ErreurEnvoyer.setText("Demande d'envoi acceptée");break; 
-                        case 1 : ErreurEnvoyer.setText("Serveur inaccessible");break; 
-                        case 2 : ErreurEnvoyer.setText("L'envoi a échoué");break; 
-                        case 3 : ErreurEnvoyer.setText("Adresse incorrecte");break; 
-                        default : ErreurEnvoyer.setText(Integer.toString(a));break; 
-                    }
-                } else {
-                    ErreurEnvoyer.setText("Fichier non trouvé");
+        EnvoiTFTP envoi = new EnvoiTFTP();
+        if ((TextPaneEnvoyer.getText() == null) || (TextPaneEnvoyer.getText().equals(""))) {
+            ErreurEnvoyer.setText("Aucun fichier sélectionné");
+        } else {
+            File f = new File(TextPaneEnvoyer.getText());
+            int a;
+            if (f.exists()) {
+                a = envoi.SendFile(TextPaneEnvoyer.getText(), Adresse.getText());
+                switch (a) {
+                    case 0:
+                        ErreurEnvoyer.setText("Demande d'envoi acceptée");
+                        break;
+                    case 1:
+                        ErreurEnvoyer.setText("Serveur inaccessible");
+                        break;
+                    case 2:
+                        ErreurEnvoyer.setText("L'envoi a échoué");
+                        break;
+                    case 3:
+                        ErreurEnvoyer.setText("Adresse incorrecte");
+                        break;
+                    default:
+                        ErreurEnvoyer.setText(Integer.toString(a));
+                        break;
                 }
-            } 
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
+                ErreurEnvoyer.setText("Fichier non trouvé");
+            }
         }
+
     }//GEN-LAST:event_ValiderEnvoyerActionPerformed
 
-    
+
     private void ValiderRecevoirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderRecevoirActionPerformed
-        try {
-            if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
-                ErreurRecevoir.setText("Aucun fichier sélectionné");
+        if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
+            ErreurRecevoir.setText("Aucun fichier sélectionné");
+        } else {
+            int a;
+            ReceptionTFTP reception = new ReceptionTFTP(TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
+            a = reception.ReceiveFile();
+            switch (a) {
+                case 0:
+                    ErreurEnvoyer.setText("Réception effectuée");
+                    break;
+                case 1:
+                    ErreurEnvoyer.setText("Erreur dans l'envoi de la demande");
+                    break;
+                case 2:
+                    ErreurEnvoyer.setText("Erreur dans la réception des données");
+                    break;
+                default:
+                    ErreurEnvoyer.setText(Integer.toString(a));
+                    break;
             }
-            else {
-                int a;
-                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getByName(Adresse.getText()),TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
-                a = reception.ReceiveFile();
-                switch (a)
-                    {
-                        case 0 : ErreurEnvoyer.setText("Réception effectuée");break; 
-                        case 1 : ErreurEnvoyer.setText("Erreur dans l'envoi de la demande");break; 
-                        case 2 : ErreurEnvoyer.setText("Erreur dans la réception des données");break;
-                        default : ErreurEnvoyer.setText(Integer.toString(a));break; 
-                    }
-            }
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }//GEN-LAST:event_ValiderRecevoirActionPerformed
 
-    
+
     private void SelectionnerFichier1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectionnerFichier1ActionPerformed
         ErreurEnvoyer.setText("");
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        
+
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
@@ -315,16 +324,14 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_AdresseActionPerformed
 
     private void localhostBoutonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localhostBoutonActionPerformed
-        try{
+        try {
             Adresse.setText(InetAddress.getLocalHost().getHostAddress());
-                }
-        catch (UnknownHostException ex) {
-            
+        } catch (UnknownHostException ex) {
+
         }
-        
+
     }//GEN-LAST:event_localhostBoutonActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */

@@ -11,10 +11,9 @@ public class ReceptionTFTP extends EchangeTFTP {
     private final String fileName;
     private final String path;
 
-    public ReceptionTFTP(InetAddress _ip, String _file, String _path) {
+    public ReceptionTFTP(String _file, String _path) {
         super();
         this.portUDP = 69;
-        this.adresseIP = _ip;
         this.fileName = _file;
         this.path = _path;
     }
