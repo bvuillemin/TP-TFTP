@@ -1,17 +1,13 @@
 package tptftp;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import packetTFTP.*;
 
 public abstract class EchangeTFTP implements Runnable {
@@ -21,7 +17,8 @@ public abstract class EchangeTFTP implements Runnable {
     protected DatagramSocket socket;
 
     final int NB_TENTATIVE = 3;
-
+    
+    
     public EchangeTFTP() {
         try {
             socket = new DatagramSocket();
@@ -43,17 +40,27 @@ public abstract class EchangeTFTP implements Runnable {
         return 0;
     }
 
-    public void sendPacket(PacketTFTP packet) {
+    /**
+     * Envoie un paquet via le protocole TCP
+     * @param packet
+     * @throws Exception 
+     */
+    public void sendPacket(PacketTFTP packet) throws Exception{
         byte[] data = packet.getDatagram();
         
         DatagramPacket dp = new DatagramPacket(data, data.length, adresseIP, portUDP);
         try {
             this.socket.send(dp);
         } catch (IOException ex) {
-            System.out.println("Impossible d'envoyer le packet TFTP");
+            throw new Exception("Impossible de joindre le serveur");
         }
     }
 
+    /**
+     * Se met en attente de réception d'un fichier pendant un temps défini
+     * @return
+     * @throws Exception 
+     */
     public byte[] receivePacket() throws Exception{
         byte[] buffer = new byte[1024];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
@@ -67,39 +74,56 @@ public abstract class EchangeTFTP implements Runnable {
         }
         return dtg.getData();
     }
-    
-    public byte[] receiveDataPacket() throws Exception{
-        byte[] buffer = new byte[516];
-        DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
-        try {
-            socket.receive(dtg);
-        } catch (IOException ex) {
-            throw ex;
-        }
-        if (dtg.getPort() != portUDP) {
-            portUDP = dtg.getPort();
-        }
-        return dtg.getData();
-    }
 
+    /**
+     * Retourne vrai si le paquet reçu est un paquet d'ACK
+     * @param n
+     * @return
+     * @throws Exception 
+     */
     public boolean receiveAck(int n) throws Exception{
         try {
-            return PacketAck.isAckPacket(receivePacket());
+            return PacketAck.isAckPacket(receivePacket(), n);
         } catch (Exception ex) {
             throw ex;
         }
     }
 
-    public void sendAck(int n) {
+    /**
+     * Envoi d'un ACK 
+     * @param n Numéro de bloc
+     * @throws Exception 
+     */
+    public void sendAck(int n) throws Exception {
         PacketAck ack = new PacketAck(n);
-        sendPacket(ack);
+        try {
+            sendPacket(ack);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
     
-    public void sendError(int n, String message) {
+    /**
+     * Envoi d'un paquet d'erreur
+     * @param n
+     * @param message
+     * @throws Exception 
+     */
+    public void sendError(int n, String message) throws Exception {
         PacketError err = new PacketError(n, message);
-        sendPacket(err);
+        try {
+            sendPacket(err);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
     
+    /**
+     * Envoi un paquet jusqu'à ce que l'acquittement se fasse ou que le nombre de tentatives soit dépassé
+     * @param packet
+     * @return
+     * @throws Exception 
+     */
     public boolean trySendPacket(PacketTFTP packet, int n) throws Exception {
         for (int i = 0; i < NB_TENTATIVE; i++) {
             sendPacket(packet);
@@ -114,6 +138,11 @@ public abstract class EchangeTFTP implements Runnable {
         return false;
     }
 
+    /**
+     * Ouvre un fichier en lecture
+     * @param file
+     * @return 
+     */
     public FileInputStream openReadFile(String file) {
         try {
             return new FileInputStream(file);
@@ -123,6 +152,11 @@ public abstract class EchangeTFTP implements Runnable {
         return null;
     }
 
+    /**
+     * Ouvre un fichier en écriture
+     * @param file
+     * @return 
+     */
     public FileOutputStream openWriteFile(String file) {
         try {
             return new FileOutputStream(file);
@@ -132,6 +166,11 @@ public abstract class EchangeTFTP implements Runnable {
         return null;
     }
 
+    /**
+     * Ferme un fichier en lecture
+     * @param f
+     * @return 
+     */
     public boolean closeReadFile(FileInputStream f) {
         try {
             f.close();
@@ -142,6 +181,11 @@ public abstract class EchangeTFTP implements Runnable {
         }
     }
 
+    /**
+     * Ferme un fichier en écriture
+     * @param f
+     * @return 
+     */
     public boolean closeWriteFile(FileOutputStream f) {
         try {
             f.close();
