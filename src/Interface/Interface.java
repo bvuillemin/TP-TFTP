@@ -229,7 +229,7 @@ public class Interface extends javax.swing.JFrame {
                 ErreurRecevoir.setText("Aucun fichier sélectionné");
             }
             else {
-                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getLocalHost(),TextPaneRecevoir.getText(), TextPaneRecevoir1.getText());
+                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getLocalHost(),TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
                 reception.ReceiveFile();
             }
         } catch (UnknownHostException ex) {
