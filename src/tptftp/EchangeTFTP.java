@@ -14,10 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import packetTFTP.*;
 
-/**
- *
- * @author Dimitri
- */
 public abstract class EchangeTFTP implements Runnable {
 
     protected InetAddress adresseIP;
@@ -71,13 +67,13 @@ public abstract class EchangeTFTP implements Runnable {
         }
         return dtg.getData();
     }
-    public byte[] receiveDataPacket() {
+    public byte[] receiveDataPacket() throws Exception{
         byte[] buffer = new byte[516];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
         try {
             socket.receive(dtg);
         } catch (IOException ex) {
-            Logger.getLogger(EchangeTFTP.class.getName()).log(Level.SEVERE, null, ex);
+            throw ex;
         }
         if (dtg.getPort() != portUDP) {
             portUDP = dtg.getPort();

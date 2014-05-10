@@ -10,10 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import packetTFTP.*;
 
-/**
- *
- * @author Dimitri
- */
 public class EnvoiTFTP extends EchangeTFTP {
 
     public EnvoiTFTP(InetAddress _ip) {

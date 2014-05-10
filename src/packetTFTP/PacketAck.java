@@ -1,16 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package packetTFTP;
 
-import java.io.UnsupportedEncodingException;
-
-/**
- *
- * @author Dimitri
- */
 public class PacketAck extends PacketTFTP {
 
     private int block;
@@ -49,10 +38,13 @@ public class PacketAck extends PacketTFTP {
 
     @Override
     public boolean getDatagramPacket(byte[] _data) {
-        if (this.isAckPacket(_data)) {
+        if (PacketAck.isAckPacket(_data)) {
             datagram = _data;
             opcode = 4;
-            block = _data[2] + 0x00;
+            
+            int a = _data[2];
+            int b = _data[3];
+            block = (a << 8) | (b);
             
             return true;
         } else {
@@ -65,8 +57,4 @@ public class PacketAck extends PacketTFTP {
         dataByte = intToByte(block);
     }
 
-    @Override
-    public void afficherPacket() {
-        System.out.println("Opcode : "+opcode+"    Block : " + block + "     Datagram : "+datagram.toString());
-    }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
@@ -13,10 +8,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Dimitri
- */
 public abstract class PacketTFTP {
 
     protected byte[] datagram;
@@ -80,12 +71,10 @@ public abstract class PacketTFTP {
 
     public abstract void buildDataByte();
     
-    public void afficherPacket(){
+    public void afficherPacket() {
         try {
-            if(this.dataByte != null){
-            String str = new String(this.dataByte, "US-ASCII");
-            System.out.println(str + " = " + dataByte.toString());
-            }
+            String str = new String(this.datagram, "US-ASCII");
+            System.out.println(str + " = " + Arrays.toString(datagram));
         } catch (UnsupportedEncodingException ex) {
         }
     }

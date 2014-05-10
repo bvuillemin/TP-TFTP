@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package packetTFTP;
 
-/**
- *
- * @author Dimitri
- */
 public class PacketRRQ extends PacketRequest {
 
     public PacketRRQ() {
@@ -25,7 +16,7 @@ public class PacketRRQ extends PacketRequest {
 
     @Override
     public boolean getDatagramPacket(byte[] _data) {
-        if (this.isRRQPacket(_data)) {
+        if (PacketRRQ.isRRQPacket(_data)) {
             opcode = 1;
             getRequestPacket(_data);
             return true;
