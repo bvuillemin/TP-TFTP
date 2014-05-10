@@ -2,6 +2,7 @@ package tptftp;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.InetAddress;
 import packetTFTP.*;
 
@@ -69,6 +70,25 @@ public class ReceptionTFTP extends EchangeTFTP {
             }
         }
         closeWriteFile(f);
+    }
+    
+    /**
+     * Réception des paquets liés à l'envoi de données
+     * @return
+     * @throws Exception 
+     */
+    public byte[] receiveDataPacket() throws Exception{
+        byte[] buffer = new byte[516];
+        DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
+        try {
+            socket.receive(dtg);
+        } catch (IOException ex) {
+            throw ex;
+        }
+        if (dtg.getPort() != portUDP) {
+            portUDP = dtg.getPort();
+        }
+        return dtg.getData();
     }
 
     /**

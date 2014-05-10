@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class PacketTFTP {
 
@@ -71,6 +69,9 @@ public abstract class PacketTFTP {
 
     public abstract void buildDataByte();
     
+    /**
+     * Permet l'affichage du texte du paquet
+     */
     public void afficherPacket() {
         try {
             String str = new String(this.datagram, "US-ASCII");

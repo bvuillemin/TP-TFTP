@@ -2,6 +2,7 @@ package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class PacketError extends PacketTFTP{
     
@@ -46,12 +47,12 @@ public class PacketError extends PacketTFTP{
     @Override
     public boolean getDatagramPacket(byte[] _data) {
         byte[]msg=new byte[datagram.length-3];
-        if (this.isErrorPacket(_data)){
+        if (PacketError.isErrorPacket(_data)){
             datagram=_data;
             opcode=5;
             errorCode =datagram[2] & 0xff;
             System.arraycopy(datagram, 3, msg, 0, datagram.length-3);
-            errMsg=msg.toString();
+            errMsg=Arrays.toString(msg);
             return true;
         }
         else return false;
@@ -70,10 +71,5 @@ public class PacketError extends PacketTFTP{
         catch(IOException ex){
             System.out.println("Impossible de convertir le packet erreur en byte[] : " + ex);
         }
-    }
-
-    @Override
-    public void afficherPacket() {
-        System.out.println("Opcode : " + opcode + "    ErrCode : " + errorCode + "    ErrMsg : " + errMsg +"   Datagram : " + datagram.toString());
     }
 }

@@ -22,18 +22,22 @@ public class PacketAck extends PacketTFTP {
         this.block = block;
     }
 
-    public static boolean isAckPacket(byte[] datagram) {
-        return 4 == (getOpcode(datagram));
-    }
+    public static boolean isAckPacket(byte[] datagram, int n) {
+        if(4 == (getOpcode(datagram))){    
+            int a = datagram[2];
+            int b = datagram[3];
+            int bloc = (a << 8) | (b);
 
-    public static boolean isNAckPacket(byte[] datagram, int number) {
-        if (isAckPacket(datagram)) {
-            int value = datagram[2] & 0xff;
-            if (value == number) {
+            if(bloc == n)
+            {
                 return true;
             }
         }
         return false;
+    }
+    
+    public static boolean isAckPacket(byte[] datagram) {
+        return (4 == getOpcode(datagram));
     }
 
     @Override
