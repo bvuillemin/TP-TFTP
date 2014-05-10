@@ -292,6 +292,9 @@ public class Interface extends javax.swing.JFrame {
                 case 2:
                     ErreurRecevoir.setText("Erreur dans la réception des données");
                     break;
+                case 3 :
+                    ErreurRecevoir.setText("Adresse incorrecte");
+                    break;
                 default:
                     ErreurRecevoir.setText(Integer.toString(a));
                     break;
