@@ -22,6 +22,8 @@ public abstract class EchangeTFTP implements Runnable {
 
     final int NB_TENTATIVE = 3;
 
+    
+    
     public EchangeTFTP() {
         try {
             socket = new DatagramSocket();
@@ -43,14 +45,14 @@ public abstract class EchangeTFTP implements Runnable {
         return 0;
     }
 
-    public void sendPacket(PacketTFTP packet) {
+    public void sendPacket(PacketTFTP packet) throws Exception{
         byte[] data = packet.getDatagram();
         
         DatagramPacket dp = new DatagramPacket(data, data.length, adresseIP, portUDP);
         try {
             this.socket.send(dp);
         } catch (IOException ex) {
-            System.out.println("Impossible d'envoyer le packet TFTP");
+            throw new Exception("Impossible de joindre le serveur");
         }
     }
 
@@ -90,14 +92,22 @@ public abstract class EchangeTFTP implements Runnable {
         }
     }
 
-    public void sendAck(int n) {
+    public void sendAck(int n) throws Exception {
         PacketAck ack = new PacketAck(n);
-        sendPacket(ack);
+        try {
+            sendPacket(ack);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
     
-    public void sendError(int n, String message) {
+    public void sendError(int n, String message) throws Exception {
         PacketError err = new PacketError(n, message);
-        sendPacket(err);
+        try {
+            sendPacket(err);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
     
     public boolean trySendPacket(PacketTFTP packet, int n) throws Exception {
