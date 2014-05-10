@@ -25,23 +25,23 @@ public class EnvoiTFTP extends EchangeTFTP {
         try {
             FileInputStream fe = openReadFile(nomFichier);
             while (fe.read(buffer) != -1) {
-                data=new PacketData(i,buffer);
+                data = new PacketData(i, buffer);
                 if (!trySendPacket(data, i)) {
-                    System.out.println("Impossible d'envoyer le packet "+ i);
+                    System.out.println("Impossible d'envoyer le packet " + i);
                     return false;
                 }
                 i++;
             }
             if (fe.available() >= 0) {
-                buffer=new byte[fe.available()];
+                buffer = new byte[fe.available()];
                 fe.read(buffer);
-                data = new PacketData(i,buffer);
+                data = new PacketData(i, buffer);
                 if (!trySendPacket(data, i)) {
-                    System.out.println("Impossible d'envoyer le packet "+ i);
+                    System.out.println("Impossible d'envoyer le packet " + i);
                     return false;
                 }
             }
-            closeReadFile (fe);
+            closeReadFile(fe);
             return true;
         } catch (FileNotFoundException ex) {
             System.out.println("Fichier non trouvé : ");
@@ -52,24 +52,36 @@ public class EnvoiTFTP extends EchangeTFTP {
             return false;
         }
     }
-
+    
+    /**
+     * Primitive de service pour envoyer un fichier
+     * @param nomFichier
+     * @param adresse
+     * @return 0 L'envoi s'est bien effectué
+     *         1 Serveur inaccessible
+     *         2 L'envoi a échoué
+     *         3 L'adresse fournie n'est pas correcte
+     */
     public int SendFile(String nomFichier, String adresse) {
         try {
             adresseIP = InetAddress.getByName(adresse);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(EnvoiTFTP.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        catch (UnknownHostException ex) {
+            return 3;
         }
-        File f = new File (nomFichier);
-        String name=f.getName();
+        File f = new File(nomFichier);
+        String name = f.getName();
         PacketWRQ packet = new PacketWRQ("netascii", name);
         if (trySendPacket(packet, 0)) {
             packet.afficherPacket();
             System.out.println("Demande d'envoi acceptée");
-            if (!sendData(nomFichier)){
+            if (!sendData(nomFichier)) {
                 System.out.println("L'envoi a échoué");
+                return 2;
             }
         } else {
             System.out.println("Serveur inaccessible");
+            return 1;
         }
         return 0;
     }

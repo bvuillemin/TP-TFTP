@@ -37,12 +37,6 @@ public class ReceptionTFTP extends EchangeTFTP {
                 return false;
             }
             
-            try {
-            String str = new String(buffer, "US-ASCII");
-            System.out.println(str + " = " + Arrays.toString(buffer));
-            } catch (UnsupportedEncodingException ex) {
-            }
-
             if (packet.getDatagramPacket(buffer) || PacketError.isErrorPacket(buffer)) {
                 if (!PacketError.isErrorPacket(buffer)) {
                     sendAck(packet.getBlock());

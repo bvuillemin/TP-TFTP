@@ -67,6 +67,7 @@ public abstract class EchangeTFTP implements Runnable {
         }
         return dtg.getData();
     }
+    
     public byte[] receiveDataPacket() throws Exception{
         byte[] buffer = new byte[516];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);

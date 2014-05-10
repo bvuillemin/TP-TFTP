@@ -212,7 +212,6 @@ public class Interface extends javax.swing.JFrame {
                 File f = new File(TextPaneEnvoyer.getText());
                 if (f.exists()) {
                     envoi.SendFile(TextPaneEnvoyer.getText(), null);
-                    //Lancer la fonction de connexion
                 } else {
                     ErreurEnvoyer.setText("Fichier non trouvé");
                 }
@@ -252,7 +251,7 @@ public class Interface extends javax.swing.JFrame {
                 System.out.println("Problème d'accès au fichier" + file.getAbsolutePath());
             }
         } else {
-            System.out.println("Annulé.");
+            System.out.println("Annulé");
         }
     }//GEN-LAST:event_SelectionnerFichier1ActionPerformed
 
