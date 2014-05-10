@@ -39,6 +39,9 @@ public class Interface extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         TextPaneRecevoir1 = new javax.swing.JTextPane();
         SelectionnerFichier1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        Adresse = new javax.swing.JTextField();
+        localhostBouton = new javax.swing.JButton();
 
         fileChooser.setDialogTitle("Choisissez le fichier à envoyer");
 
@@ -57,7 +60,7 @@ public class Interface extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(TextPaneEnvoyer);
 
-        SelectionnerFichier.setText("FIchier...");
+        SelectionnerFichier.setText("Fichier...");
         SelectionnerFichier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SelectionnerFichierActionPerformed(evt);
@@ -137,7 +140,7 @@ public class Interface extends javax.swing.JFrame {
                             .addComponent(SelectionnerFichier1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ValiderRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                            .addComponent(ValiderRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
                             .addComponent(jScrollPane3))))
                 .addContainerGap())
         );
@@ -145,7 +148,7 @@ public class Interface extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ErreurRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                .addComponent(ErreurRecevoir, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
@@ -159,6 +162,21 @@ public class Interface extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Recevoir", jPanel2);
 
+        jLabel3.setText("Adresse :");
+
+        Adresse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AdresseActionPerformed(evt);
+            }
+        });
+
+        localhostBouton.setText("localhost");
+        localhostBouton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                localhostBoutonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -170,18 +188,38 @@ public class Interface extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 1, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(Adresse, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(localhostBouton)
+                        .addGap(38, 38, 38))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addGap(18, 18, 18)
+                .addGap(47, 47, 47)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Adresse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(localhostBouton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        try{
+            Adresse.setText(InetAddress.getLocalHost().getHostAddress());
+        }
+        catch (UnknownHostException ex) {
+
+        }
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -205,18 +243,21 @@ public class Interface extends javax.swing.JFrame {
     
     private void ValiderEnvoyerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderEnvoyerActionPerformed
         try {
-            EnvoiTFTP envoi = new EnvoiTFTP(InetAddress.getLocalHost());
+            EnvoiTFTP envoi = new EnvoiTFTP(InetAddress.getByName(Adresse.getText()));
             if ((TextPaneEnvoyer.getText() == null) || (TextPaneEnvoyer.getText().equals(""))) {
                 ErreurEnvoyer.setText("Aucun fichier sélectionné");
             } else {
                 File f = new File(TextPaneEnvoyer.getText());
+                int a;
                 if (f.exists()) {
-                    int a = envoi.SendFile(TextPaneEnvoyer.getText(), null);
+                    a = envoi.SendFile(TextPaneEnvoyer.getText(), Adresse.getText());
                     switch (a)
                     {
-                        case 1 : ErreurEnvoyer.setText("Serveur inaccessible");
-                        case 2 : ErreurEnvoyer.setText("L'envoi a échoué");
-                        case 3 : ErreurEnvoyer.setText("Adresse incorrecte");
+                        case 0 : ErreurEnvoyer.setText("Demande d'envoi acceptée");break; 
+                        case 1 : ErreurEnvoyer.setText("Serveur inaccessible");break; 
+                        case 2 : ErreurEnvoyer.setText("L'envoi a échoué");break; 
+                        case 3 : ErreurEnvoyer.setText("Adresse incorrecte");break; 
+                        default : ErreurEnvoyer.setText(Integer.toString(a));break; 
                     }
                 } else {
                     ErreurEnvoyer.setText("Fichier non trouvé");
@@ -234,8 +275,16 @@ public class Interface extends javax.swing.JFrame {
                 ErreurRecevoir.setText("Aucun fichier sélectionné");
             }
             else {
-                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getLocalHost(),TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
-                reception.ReceiveFile();
+                int a;
+                ReceptionTFTP reception = new ReceptionTFTP(InetAddress.getByName(Adresse.getText()),TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
+                a = reception.ReceiveFile();
+                switch (a)
+                    {
+                        case 0 : ErreurEnvoyer.setText("Réception effectuée");break; 
+                        case 1 : ErreurEnvoyer.setText("Erreur dans l'envoi de la demande");break; 
+                        case 2 : ErreurEnvoyer.setText("Erreur dans la réception des données");break;
+                        default : ErreurEnvoyer.setText(Integer.toString(a));break; 
+                    }
             }
         } catch (UnknownHostException ex) {
             Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
@@ -260,6 +309,20 @@ public class Interface extends javax.swing.JFrame {
             ErreurEnvoyer.setText("Annulé");
         }
     }//GEN-LAST:event_SelectionnerFichier1ActionPerformed
+
+    private void AdresseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdresseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AdresseActionPerformed
+
+    private void localhostBoutonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localhostBoutonActionPerformed
+        try{
+            Adresse.setText(InetAddress.getLocalHost().getHostAddress());
+                }
+        catch (UnknownHostException ex) {
+            
+        }
+        
+    }//GEN-LAST:event_localhostBoutonActionPerformed
 
     
     /**
@@ -298,6 +361,7 @@ public class Interface extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Adresse;
     private javax.swing.JLabel ErreurEnvoyer;
     private javax.swing.JLabel ErreurRecevoir;
     private javax.swing.JButton SelectionnerFichier;
@@ -310,11 +374,13 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JButton localhostBouton;
     // End of variables declaration//GEN-END:variables
 }
