@@ -254,7 +254,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTextPane" name="TextPaneRecevoir">
+                <Component class="javax.swing.JTextPane" name="TextPaneNomFichier">
                 </Component>
               </SubComponents>
             </Container>
@@ -265,7 +265,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTextPane" name="TextPaneRecevoir1">
+                <Component class="javax.swing.JTextPane" name="TextPanePath">
                 </Component>
               </SubComponents>
             </Container>

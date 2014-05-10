@@ -35,9 +35,9 @@ public class Interface extends javax.swing.JFrame {
         ValiderRecevoir = new javax.swing.JToggleButton();
         ErreurRecevoir = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        TextPaneRecevoir = new javax.swing.JTextPane();
+        TextPaneNomFichier = new javax.swing.JTextPane();
         jScrollPane4 = new javax.swing.JScrollPane();
-        TextPaneRecevoir1 = new javax.swing.JTextPane();
+        TextPanePath = new javax.swing.JTextPane();
         SelectionnerFichier1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         Adresse = new javax.swing.JTextField();
@@ -115,9 +115,9 @@ public class Interface extends javax.swing.JFrame {
         ErreurRecevoir.setForeground(new java.awt.Color(255, 0, 0));
         ErreurRecevoir.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        jScrollPane3.setViewportView(TextPaneRecevoir);
+        jScrollPane3.setViewportView(TextPaneNomFichier);
 
-        jScrollPane4.setViewportView(TextPaneRecevoir1);
+        jScrollPane4.setViewportView(TextPanePath);
 
         SelectionnerFichier1.setText("Dossier");
         SelectionnerFichier1.addActionListener(new java.awt.event.ActionListener() {
@@ -276,12 +276,12 @@ public class Interface extends javax.swing.JFrame {
 
 
     private void ValiderRecevoirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ValiderRecevoirActionPerformed
-        if ((TextPaneRecevoir.getText() == null) || (TextPaneRecevoir.getText().equals(""))) {
+        if ((TextPaneNomFichier.getText() == null) || (TextPaneNomFichier.getText().equals(""))) {
             ErreurRecevoir.setText("Aucun fichier sélectionné");
         } else {
             int a;
-            ReceptionTFTP reception = new ReceptionTFTP(TextPaneRecevoir.getText(), TextPaneRecevoir1.getText() + "//");
-            a = reception.ReceiveFile();
+            ReceptionTFTP reception = new ReceptionTFTP(TextPanePath.getText() + "//");
+            a = reception.ReceiveFile(TextPaneNomFichier.getText(), Adresse.getText());
             switch (a) {
                 case 0:
                     ErreurRecevoir.setText("Réception effectuée");
@@ -310,7 +310,7 @@ public class Interface extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             try {
-                TextPaneRecevoir1.setText(file.getAbsolutePath());
+                TextPanePath.setText(file.getAbsolutePath());
             } catch (Exception ex) {
                 ErreurEnvoyer.setText("Problème d'accès au fichier" + file.getAbsolutePath());
             }
@@ -374,8 +374,8 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JButton SelectionnerFichier;
     private javax.swing.JButton SelectionnerFichier1;
     private javax.swing.JTextPane TextPaneEnvoyer;
-    private javax.swing.JTextPane TextPaneRecevoir;
-    private javax.swing.JTextPane TextPaneRecevoir1;
+    private javax.swing.JTextPane TextPaneNomFichier;
+    private javax.swing.JTextPane TextPanePath;
     private javax.swing.JButton ValiderEnvoyer;
     private javax.swing.JToggleButton ValiderRecevoir;
     private javax.swing.JFileChooser fileChooser;

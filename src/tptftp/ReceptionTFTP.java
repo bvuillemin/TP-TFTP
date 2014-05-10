@@ -4,17 +4,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import packetTFTP.*;
 
 public class ReceptionTFTP extends EchangeTFTP {
 
-    private final String fileName;
+    private String fileName;
     private final String path;
 
-    public ReceptionTFTP(String _file, String _path) {
+    public ReceptionTFTP(String _path) {
         super();
         this.portUDP = 69;
-        this.fileName = _file;
         this.path = _path;
     }
 
@@ -116,9 +116,15 @@ public class ReceptionTFTP extends EchangeTFTP {
      *         1 Erreur dans l'envoi de la demande
      *         2 Erreur dans la réception des données
      */
-    public int ReceiveFile() {
+    public int ReceiveFile(String _file, String adresse) {
         PacketData data = new PacketData();
         
+        this.fileName = _file;
+        try {
+            adresseIP = InetAddress.getByName(adresse);
+        } catch (UnknownHostException ex) {
+            return 3;
+        }
         try {
             trySendRRQ(data);
         } catch (Exception ex) {
@@ -135,6 +141,6 @@ public class ReceptionTFTP extends EchangeTFTP {
 
     @Override
     public void run() {
-        ReceiveFile();
+        ReceiveFile("","");
     }
 }
