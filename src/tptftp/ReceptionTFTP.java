@@ -26,12 +26,11 @@ public class ReceptionTFTP extends EchangeTFTP {
      */
     public boolean tryReceiveDataPacket (PacketData packet) throws Exception {
         byte[] buffer;
-        
         for (int i = 0; i < NB_TENTATIVE; i++) {
             try {
                 buffer = receiveDataPacket();
             } catch (Exception ex) {
-                return false;
+                throw ex;
             }
             
             if (packet.getDatagramPacket(buffer) || PacketError.isErrorPacket(buffer)) {
@@ -45,7 +44,7 @@ public class ReceptionTFTP extends EchangeTFTP {
                 }
             }
         }
-        return false;
+        throw new Exception("Erreur: nombre tentatives dépassé");
     }
 
     /**
@@ -55,12 +54,14 @@ public class ReceptionTFTP extends EchangeTFTP {
      */
     public void receiveData(PacketData data) throws Exception{
         boolean receptionOK = true;
+        int numData=data.getBlock();
         FileOutputStream f = openWriteFile(path + fileName);
         if (f != null) {
             try {
                 f.write(data.getData());
                 while (data.getData().length >= 512 && receptionOK) {
-                    receptionOK = tryReceiveDataPacket(data);
+                    receptionOK = tryReceiveDataPacket(data) && data.getBlock()!=numData;
+                    numData=data.getBlock();
                     f.write(data.getData());
                 }
             } catch (IOException ex) {
@@ -90,7 +91,7 @@ public class ReceptionTFTP extends EchangeTFTP {
     }
 
     /**
-     * Envoie du paquet RRQ
+     * Envoi du paquet RRQ
      * @param data Premier paquet de data que l'on reçoit en temps qu'ACK
      * @return 
      * @throws Exception indiquant la provenance de l'erreur
