@@ -83,7 +83,13 @@ public abstract class EchangeTFTP implements Runnable {
      */
     public boolean receiveAck(int n) throws Exception{
         try {
-            return PacketAck.isAckPacket(receivePacket(), n);
+            PacketAck ack = new PacketAck();
+            byte[] packet = receivePacket();
+            ack.getDatagramPacket(packet);
+            if( ack.isAckPacket(packet, n)){
+                return true;
+            }
+            return false;
         } catch (Exception ex) {
             throw ex;
         }

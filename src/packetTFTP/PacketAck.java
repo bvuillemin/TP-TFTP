@@ -1,5 +1,8 @@
 package packetTFTP;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 public class PacketAck extends PacketTFTP {
 
     private int block;
@@ -23,15 +26,8 @@ public class PacketAck extends PacketTFTP {
     }
 
     public static boolean isAckPacket(byte[] datagram, int n) {
-        if(4 == (getOpcode(datagram))){    
-            int a = datagram[2];
-            int b = datagram[3];
-            int bloc = (a << 8) | (b);
-
-            if(bloc == n)
-            {
-                return true;
-            }
+        if(4 == (getOpcode(datagram))){
+            return byteToInt(datagram) == n;
         }
         return false;
     }
@@ -45,11 +41,7 @@ public class PacketAck extends PacketTFTP {
         if (PacketAck.isAckPacket(_data)) {
             datagram = _data;
             opcode = 4;
-            
-            int a = _data[2];
-            int b = _data[3];
-            block = (a << 8) | (b);
-            
+            block=byteToInt(_data);
             return true;
         } else {
             return false;

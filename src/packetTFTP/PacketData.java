@@ -2,7 +2,8 @@ package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class PacketData extends PacketTFTP{
 
@@ -43,10 +44,7 @@ public class PacketData extends PacketTFTP{
     
     public static boolean isNDataPacket(byte[] datagram, int number){
         if (isDataPacket(datagram)){
-            int value = datagram[2] & 0xff;
-            if(value==number){
-                return false;
-            }
+            return byteToInt(datagram)==number;
         }
         return false;
     }
@@ -56,8 +54,7 @@ public class PacketData extends PacketTFTP{
         if (this.isDataPacket(_data)) {
             datagram = _data;
             opcode = 3;
-            block = _data[3];
-
+            block=byteToInt(_data);
             data = new byte[datagram.length - 4];
             System.arraycopy(datagram, 4, data, 0, datagram.length - 4);
             return true;

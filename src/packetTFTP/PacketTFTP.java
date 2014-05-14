@@ -2,7 +2,7 @@ package packetTFTP;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+//import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -49,10 +49,17 @@ public abstract class PacketTFTP {
         
     }
     
-    public byte[] intToByte(int i) {
+    public static byte[] intToByte(int i) {
         ByteBuffer data = ByteBuffer.allocate(2);
         data.putShort((short)i);
         return data.array();
+    }
+    
+    public static int byteToInt (byte b[]) {
+        ByteBuffer _block = ByteBuffer.allocate(2);
+        _block.put(b[2]);
+        _block.put((int) 1, b[3]);
+        return (int) _block.getShort(0);
     }
     
     public static int getOpcode(byte[] _dtg) {
@@ -73,10 +80,10 @@ public abstract class PacketTFTP {
      * Permet l'affichage du texte du paquet
      */
     public void afficherPacket() {
-        try {
-            String str = new String(this.datagram, "US-ASCII");
-            System.out.println(str + " = " + Arrays.toString(datagram));
-        } catch (UnsupportedEncodingException ex) {
-        }
+        /*try {
+            String str = new String(this.datagram, "US-ASCII");*/
+            System.out.println(/*str + " = " + */Arrays.toString(datagram));
+        /*} catch (UnsupportedEncodingException ex) {
+        }*/
     }
 }

@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import packetTFTP.*;
 
 public class EnvoiTFTP extends EchangeTFTP {
@@ -72,7 +70,6 @@ public class EnvoiTFTP extends EchangeTFTP {
         PacketWRQ packet = new PacketWRQ("netascii", name);
         try {
             if (trySendPacket(packet, 0)) {
-                packet.afficherPacket();
                 System.out.println("Demande d'envoi acceptée");
                 
                 try {
