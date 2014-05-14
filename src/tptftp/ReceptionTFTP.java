@@ -155,6 +155,7 @@ public class ReceptionTFTP extends EchangeTFTP {
             System.out.println("La reception a échoué : " + ex.getMessage());
             return ex.getErrType();
         }
+        System.out.println("La reception a réussi");
         return 0;
     }
 

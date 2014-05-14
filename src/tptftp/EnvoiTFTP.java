@@ -126,6 +126,7 @@ public class EnvoiTFTP extends EchangeTFTP {
             System.out.println("L'envoi a échoué : " + ex.getMessage());
             return ex.getErrType();
         }
+        System.out.println("L'envoi a réussi");
         return 0;
     }
 
