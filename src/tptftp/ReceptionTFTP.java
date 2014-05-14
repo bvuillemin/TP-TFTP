@@ -21,60 +21,74 @@ public class ReceptionTFTP extends EchangeTFTP {
     /**
      * Attend de recevoir un paquet de DATA et envoit l'ACK nécessaire
      * @param packet
-     * @return Vrai si la réception s'est effectuée
-     * @throws Exception indiquant la provenance de l'erreur
+     * @throws packetTFTP.ErreurTFTP
      */
-    public boolean tryReceiveDataPacket (PacketData packet) throws Exception {
+    public void receiveDataPacket (PacketData packet) throws ErreurTFTP {
         byte[] buffer;
-        for (int i = 0; i < NB_TENTATIVE; i++) {
+        try {
+            buffer = receiveDataPacket();
             try {
-                buffer = receiveDataPacket();
+                packet.getDatagramPacket(buffer);
             } catch (Exception ex) {
-                throw ex;
-            }
-            
-            if (packet.getDatagramPacket(buffer) || PacketError.isErrorPacket(buffer)) {
-                if (!PacketError.isErrorPacket(buffer)) {
-                    try {
-                        sendAck(packet.getBlock());
-                    } catch (Exception ex) {
-                        throw ex;
-                    }
-                    return true;
+                try{
+                    PacketError err = new PacketError();
+                    err.getDatagramPacket(buffer);
+                    throw new ErreurTFTP(5,"Erreur reçue " + err.getErrorCode() + " : " + err.getErrMsg());
+                }
+                catch(Exception er){
+                    throw new ErreurTFTP(6,"Packet non reconnu ou non attendu");
                 }
             }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
         }
-        throw new Exception("Erreur: nombre tentatives dépassé");
+        sendAck(packet.getBlock());
     }
 
     /**
      * Ecrit dans le fichier le premier paquet de DATA puis essaie de recevoir les suivants jusqu'à la fin de l'envoi
-     * @param data 
-     * @throws Exception indiquant la provenance de l'erreur
+     * @param data
+     * @throws packetTFTP.ErreurTFTP
      */
-    public void receiveData(PacketData data) throws Exception{
+    public void receiveData(PacketData data) throws ErreurTFTP{
         boolean receptionOK = true;
-        int numData=data.getBlock();
+        int numData=data.getBlock(),i;
         FileOutputStream f = openWriteFile(path + fileName);
         if (f != null) {
             try {
                 f.write(data.getData());
                 while (data.getData().length >= 512 && receptionOK) {
-                    receptionOK = tryReceiveDataPacket(data) && data.getBlock()!=numData;
+                    try{
+                        for (i = 0; i < NB_TENTATIVE; i++) {
+                            receiveDataPacket(data);
+                            break;
+                        }
+                        if (i>=NB_TENTATIVE){
+                            throw new ErreurTFTP (3,"Aucune réponse du serveur : Time Out");
+                        }
+                    }catch(ErreurTFTP er){
+                        throw er;
+                    }
+                    receptionOK=data.getBlock()!=numData;
                     numData=data.getBlock();
                     f.write(data.getData());
                 }
             } catch (IOException ex) {
-                System.out.println("Impossible d'écrire dans le fichier " + fileName);
+                throw new ErreurTFTP(2,"Impossible d'écrire dans le fichier : " + fileName);
             }
         }
-        closeWriteFile(f);
+        else{
+            throw new ErreurTFTP(2,"Impossible de creer le fichier : " + fileName);
+        }
+        if (!closeWriteFile(f)){
+            throw new ErreurTFTP(2,"Impossible de fermer le fichier : " + fileName);
+        }
     }
     
     /**
      * Réception des paquets liés à l'envoi de données
-     * @return
-     * @throws Exception 
+     * @return 
+     * @throws packetTFTP.ErreurTFTP 
      */
     public byte[] receiveDataPacket() throws Exception{
         byte[] buffer = new byte[516];
@@ -82,7 +96,7 @@ public class ReceptionTFTP extends EchangeTFTP {
         try {
             socket.receive(dtg);
         } catch (IOException ex) {
-            throw ex;
+            throw new Exception ( "Aucun Packet reçu");
         }
         if (dtg.getPort() != portUDP) {
             portUDP = dtg.getPort();
@@ -93,29 +107,30 @@ public class ReceptionTFTP extends EchangeTFTP {
     /**
      * Envoi du paquet RRQ
      * @param data Premier paquet de data que l'on reçoit en temps qu'ACK
-     * @return 
-     * @throws Exception indiquant la provenance de l'erreur
+     * @throws packetTFTP.ErreurTFTP
      */
-    public boolean trySendRRQ(PacketData data) throws Exception {
+    public void trySendRRQ(PacketData data) throws ErreurTFTP {
+        int i;
         PacketRRQ packet = new PacketRRQ("netascii", fileName);
-        for (int i = 0; i < NB_TENTATIVE; i++) {
-            try {
-                sendPacket(packet);
-            } catch (Exception ex) {
-                throw ex;
-            }
-            if (tryReceiveDataPacket(data)) {
-                return true;
-            }
+        for (i = 0; i < NB_TENTATIVE; i++) {
+            sendPacket(packet);
+            receiveDataPacket(data);
+            break;
         }
-        return false;
+        if (i>=NB_TENTATIVE)throw new ErreurTFTP (3,"Aucune réponse du serveur : Time Out");
     }
 
     /**
      * Appelle l'envoi d'un paquet RRQ, puis effectue l'appel pour la réception des données
+     * @param _file
+     * @param adresse
      * @return 0 Si correctement effectué
-     *         1 Erreur dans l'envoi de la demande
-     *         2 Erreur dans la réception des données
+     *         1 Adresse IP incorrecte 
+     *         2 Erreur Fichier
+     *         3 Aucune réponse du serveur : Time Out
+     *         4 Erreur envoi ACK
+     *         5 Erreur dans la réception des données
+     *         6 Erreur dans l'envoi de la demande
      */
     public int ReceiveFile(String _file, String adresse) {
         PacketData data = new PacketData();
@@ -124,18 +139,21 @@ public class ReceptionTFTP extends EchangeTFTP {
         try {
             adresseIP = InetAddress.getByName(adresse);
         } catch (UnknownHostException ex) {
-            return 3;
+            System.out.println("Adresse Ip incorrecte");
+            return 1;
         }
         try {
             trySendRRQ(data);
-        } catch (Exception ex) {
-            return 1;
+        } catch (ErreurTFTP er) {
+            System.out.println("Demande RRQ refusée : " + er.getMessage());
+            return er.getErrType();
         }
         
         try {
             receiveData(data);
-        } catch (Exception ex) {
-            return 2;
+        } catch (ErreurTFTP ex) {
+            System.out.println("La reception a échoué : " + ex.getMessage());
+            return ex.getErrType();
         }
         return 0;
     }

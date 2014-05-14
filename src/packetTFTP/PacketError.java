@@ -45,7 +45,7 @@ public class PacketError extends PacketTFTP{
     }
     
     @Override
-    public boolean getDatagramPacket(byte[] _data) {
+    public void getDatagramPacket(byte[] _data) throws Exception {
         byte[]msg=new byte[datagram.length-3];
         if (PacketError.isErrorPacket(_data)){
             datagram=_data;
@@ -53,9 +53,8 @@ public class PacketError extends PacketTFTP{
             errorCode =datagram[2] & 0xff;
             System.arraycopy(datagram, 3, msg, 0, datagram.length-3);
             errMsg=Arrays.toString(msg);
-            return true;
         }
-        else return false;
+        else throw new Exception ("Ce n'est pas un packet Erreur");
     }
 
     @Override

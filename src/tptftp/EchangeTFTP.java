@@ -27,39 +27,27 @@ public abstract class EchangeTFTP implements Runnable {
             System.err.println("Impossible de créer le socket");
         }
     }
-
-    static int scanPorts(int debut, int fin) {
-        DatagramSocket port;
-        for (int i = debut; i <= fin; i++) {
-            try {
-                port = new DatagramSocket(i);
-                return i;
-            } catch (SocketException e) {
-            }
-        }
-        return 0;
-    }
-
+    
     /**
      * Envoie un paquet via le protocole TCP
-     * @param packet
-     * @throws Exception 
+     * @param packet 
+     * @throws packetTFTP.ErreurTFTP 
      */
-    public void sendPacket(PacketTFTP packet) throws Exception{
+    public void sendPacket(PacketTFTP packet) throws ErreurTFTP{
         byte[] data = packet.getDatagram();
         
         DatagramPacket dp = new DatagramPacket(data, data.length, adresseIP, portUDP);
         try {
             this.socket.send(dp);
         } catch (IOException ex) {
-            throw new Exception("Impossible de joindre le serveur");
+            throw new ErreurTFTP(4,"Impossible d'envoyer le packet ");
         }
     }
 
     /**
      * Se met en attente de réception d'un fichier pendant un temps défini
-     * @return
-     * @throws Exception 
+     * @return 
+     * @throws packetTFTP.ErreurTFTP 
      */
     public byte[] receivePacket() throws Exception{
         byte[] buffer = new byte[1024];
@@ -67,7 +55,7 @@ public abstract class EchangeTFTP implements Runnable {
         try {
             socket.receive(dtg);
         } catch (IOException ex) {
-            throw new Exception("Erreur de réception");
+            throw new Exception("Aucun packet reçu");
         }
         if (dtg.getPort() != portUDP) {
             portUDP = dtg.getPort();
@@ -76,72 +64,32 @@ public abstract class EchangeTFTP implements Runnable {
     }
 
     /**
-     * Retourne vrai si le paquet reçu est un paquet d'ACK
-     * @param n
-     * @return
-     * @throws Exception 
-     */
-    public boolean receiveAck(int n) throws Exception{
-        try {
-            PacketAck ack = new PacketAck();
-            byte[] packet = receivePacket();
-            ack.getDatagramPacket(packet);
-            if( ack.isAckPacket(packet, n)){
-                return true;
-            }
-            return false;
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
-
-    /**
      * Envoi d'un ACK 
-     * @param n Numéro de bloc
-     * @throws Exception 
+     * @param n Numéro de bloc 
+     * @throws packetTFTP.ErreurTFTP 
      */
-    public void sendAck(int n) throws Exception {
+    public void sendAck(int n) throws ErreurTFTP {
         PacketAck ack = new PacketAck(n);
         try {
             sendPacket(ack);
         } catch (Exception ex) {
-            throw ex;
+            throw new ErreurTFTP(4,"Impossible d'envoyer l'ACK : " + ack.getBlock());
         }
     }
     
     /**
      * Envoi d'un paquet d'erreur
      * @param n
-     * @param message
-     * @throws Exception 
+     * @param message 
+     * @throws packetTFTP.ErreurTFTP 
      */
-    public void sendError(int n, String message) throws Exception {
+    public void sendError(int n, String message) throws ErreurTFTP {
         PacketError err = new PacketError(n, message);
         try {
             sendPacket(err);
         } catch (Exception ex) {
-            throw ex;
+            throw new ErreurTFTP(4,"Impossible d'envoyer l'Erreur : " + message);
         }
-    }
-    
-    /**
-     * Envoi un paquet jusqu'à ce que l'acquittement se fasse ou que le nombre de tentatives soit dépassé
-     * @param packet
-     * @return
-     * @throws Exception 
-     */
-    public boolean trySendPacket(PacketTFTP packet, int n) throws Exception {
-        for (int i = 0; i < NB_TENTATIVE; i++) {
-            sendPacket(packet);
-            try {
-                if (receiveAck(n)) {
-                    return true;
-                }
-            } catch (Exception ex) {
-                throw ex;
-            }
-        }
-        return false;
     }
 
     /**

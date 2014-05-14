@@ -15,13 +15,12 @@ public class PacketRRQ extends PacketRequest {
     }
 
     @Override
-    public boolean getDatagramPacket(byte[] _data) {
+    public void getDatagramPacket(byte[] _data) throws Exception {
         if (PacketRRQ.isRRQPacket(_data)) {
             opcode = 1;
             getRequestPacket(_data);
-            return true;
         } else {
-            return false;
+            throw new Exception ("Ce n'est pas un packet RRQ");
         }
     }
 }

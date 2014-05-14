@@ -252,16 +252,25 @@ public class Interface extends javax.swing.JFrame {
                 a = envoi.SendFile(TextPaneEnvoyer.getText(), Adresse.getText());
                 switch (a) {
                     case 0:
-                        ErreurEnvoyer.setText("Demande d'envoi acceptée");
+                        ErreurEnvoyer.setText("Envoi Effectué");
                         break;
                     case 1:
-                        ErreurEnvoyer.setText("Serveur inaccessible");
+                        ErreurEnvoyer.setText("Adresse IP incorrecte");
                         break;
                     case 2:
-                        ErreurEnvoyer.setText("L'envoi a échoué");
+                        ErreurEnvoyer.setText("Problème fichier");
                         break;
                     case 3:
-                        ErreurEnvoyer.setText("Adresse incorrecte");
+                        ErreurEnvoyer.setText("Aucune réponse du serveur : Time Out");
+                        break;
+                    case 4:
+                        ErreurEnvoyer.setText("Erreur lors de l'envoi d'un packet");
+                        break;
+                    case 5:
+                        ErreurEnvoyer.setText("Erreur reçue du serveur");
+                        break;
+                    case 6:
+                        ErreurEnvoyer.setText("Packet non reconnu reçu");
                         break;
                     default:
                         ErreurEnvoyer.setText(Integer.toString(a));
@@ -284,20 +293,29 @@ public class Interface extends javax.swing.JFrame {
             a = reception.ReceiveFile(TextPaneNomFichier.getText(), Adresse.getText());
             switch (a) {
                 case 0:
-                    ErreurRecevoir.setText("Réception effectuée");
-                    break;
-                case 1:
-                    ErreurRecevoir.setText("Erreur dans l'envoi de la demande");
-                    break;
-                case 2:
-                    ErreurRecevoir.setText("Erreur dans la réception des données");
-                    break;
-                case 3 :
-                    ErreurRecevoir.setText("Adresse incorrecte");
-                    break;
-                default:
-                    ErreurRecevoir.setText(Integer.toString(a));
-                    break;
+                        ErreurEnvoyer.setText("Reception Effectuée");
+                        break;
+                    case 1:
+                        ErreurEnvoyer.setText("Adresse IP incorrecte");
+                        break;
+                    case 2:
+                        ErreurEnvoyer.setText("Problème fichier");
+                        break;
+                    case 3:
+                        ErreurEnvoyer.setText("Aucune réponse du serveur : Time Out");
+                        break;
+                    case 4:
+                        ErreurEnvoyer.setText("Erreur lors de l'envoi d'un ACK");
+                        break;
+                    case 5:
+                        ErreurEnvoyer.setText("Erreur reçue du serveur");
+                        break;
+                    case 6:
+                        ErreurEnvoyer.setText("Packet non reconnu reçu");
+                        break;
+                    default:
+                        ErreurEnvoyer.setText(Integer.toString(a));
+                        break;
             }
         }
 

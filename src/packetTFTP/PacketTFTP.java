@@ -72,7 +72,7 @@ public abstract class PacketTFTP {
         return value;
     }
     
-    public abstract boolean getDatagramPacket(byte[] _data);
+    public abstract void getDatagramPacket(byte[] _data) throws Exception;
 
     public abstract void buildDataByte();
     
