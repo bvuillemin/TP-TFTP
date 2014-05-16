@@ -34,13 +34,14 @@ public class PacketAck extends PacketTFTP {
     }
 
     @Override
-    public void getDatagramPacket(byte[] _data) throws Exception {
+    public boolean getDatagramPacket(byte[] _data) {
         if (PacketAck.isAckPacket(_data)) {
             datagram = _data;
             opcode = 4;
             block=byteToInt(_data);
+            return false;
         } else {
-            throw new Exception ("Ce n'est pas un packet ACK");
+            return false;
         }
     }
     

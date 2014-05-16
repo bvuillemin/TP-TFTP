@@ -48,15 +48,16 @@ public class PacketData extends PacketTFTP{
     }
     
     @Override
-    public void getDatagramPacket(byte[] _data) throws Exception {
+    public boolean getDatagramPacket(byte[] _data) {
         if (this.isDataPacket(_data)) {
             datagram = _data;
             opcode = 3;
             block=byteToInt(_data);
             data = new byte[datagram.length - 4];
             System.arraycopy(datagram, 4, data, 0, datagram.length - 4);
+            return true;
         } else {
-            throw new Exception ("Ce n'est pas un packet DATA");
+            return false;
         }
     }
 

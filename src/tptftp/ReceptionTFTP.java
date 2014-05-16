@@ -20,23 +20,21 @@ public class ReceptionTFTP extends EchangeTFTP {
 
     /**
      * Attend de recevoir un paquet de DATA et envoit l'ACK nécessaire
+     *
      * @param packet
      * @throws packetTFTP.ErreurTFTP
      */
-    public void receiveDataPacket (PacketData packet) throws ErreurTFTP {
+    public void receiveDataPacket(PacketData packet) throws ErreurTFTP {
         byte[] buffer;
         try {
             buffer = receiveDataPacket();
-            try {
-                packet.getDatagramPacket(buffer);
-            } catch (Exception ex) {
-                try{
-                    PacketError err = new PacketError();
-                    err.getDatagramPacket(buffer);
-                    throw new ErreurTFTP(5,"Erreur reçue " + err.getErrorCode() + " : " + err.getErrMsg());
-                }
-                catch(Exception er){
-                    throw new ErreurTFTP(6,"Packet non reconnu ou non attendu");
+            if (!packet.getDatagramPacket(buffer)) {
+                PacketError err = new PacketError();
+                if (err.getDatagramPacket(buffer)) {
+                    throw new ErreurTFTP(5, "Erreur reçue " + err.getErrorCode() + " : " + err.getErrMsg());
+                } 
+                else {
+                    throw new ErreurTFTP(6, "Packet non reconnu ou non attendu");
                 }
             }
         } catch (Exception ex) {
@@ -46,57 +44,71 @@ public class ReceptionTFTP extends EchangeTFTP {
     }
 
     /**
-     * Ecrit dans le fichier le premier paquet de DATA puis essaie de recevoir les suivants jusqu'à la fin de l'envoi
+     * Ecrit dans le fichier le premier paquet de DATA puis essaie de recevoir
+     * les suivants jusqu'à la fin de l'envoi
+     *
      * @param data
      * @throws packetTFTP.ErreurTFTP
      */
-    public void receiveData(PacketData data) throws ErreurTFTP{
+    public void receiveData(PacketData data) throws ErreurTFTP {
         boolean receptionOK = true;
-        int numData=data.getBlock(),i;
+        int numData = data.getBlock(), i = 0;
         FileOutputStream f = openWriteFile(path + fileName);
         if (f != null) {
-            try {
+            try{
                 f.write(data.getData());
-                while (data.getData().length >= 512 && receptionOK) {
-                    try{
-                        for (i = 0; i < NB_TENTATIVE; i++) {
-                            receiveDataPacket(data);
-                            break;
-                        }
-                        if (i>=NB_TENTATIVE){
-                            throw new ErreurTFTP (3,"Aucune réponse du serveur : Time Out");
-                        }
-                    }catch(ErreurTFTP er){
-                        throw er;
-                    }
-                    receptionOK=data.getBlock()!=numData;
-                    numData=data.getBlock();
-                    f.write(data.getData());
-                }
-            } catch (IOException ex) {
-                throw new ErreurTFTP(2,"Impossible d'écrire dans le fichier : " + fileName);
             }
+            catch (IOException ex) {
+                throw new ErreurTFTP(2, "Impossible d'écrire dans le fichier : " + fileName);
+            }
+            do {
+                for (i = 0; i < NB_TENTATIVE; i++) {
+                    try {
+                        receiveDataPacket(data);
+                        receptionOK = data.getBlock() != numData;
+                        numData = data.getBlock();
+                        f.write(data.getData());
+                        break;
+                    } catch (ErreurTFTP er) {
+                        if (i >= NB_TENTATIVE) {
+                            throw new ErreurTFTP(3, "Aucune réponse du serveur : Time Out");
+                        } else {
+                            if (er.getErrType() == 5) {
+                                throw er;
+                            } else if (er.getErrType() == 6) {
+                                sendError(data.getBlock()+1,er.getMessage());
+                                System.out.println("Erreur reçue : " + er.getMessage());
+                            } else {
+                                System.out.println(er.getMessage());
+                            }
+                        }
+                    }
+                    catch (IOException ex) {
+                        throw new ErreurTFTP(2, "Impossible d'écrire dans le fichier : " + fileName);
+                    }
+                }
+            }while (data.getData().length >= 512 && receptionOK);
+        } else {
+            throw new ErreurTFTP(2, "Impossible de creer le fichier : " + fileName);
         }
-        else{
-            throw new ErreurTFTP(2,"Impossible de creer le fichier : " + fileName);
-        }
-        if (!closeWriteFile(f)){
-            throw new ErreurTFTP(2,"Impossible de fermer le fichier : " + fileName);
+        if (!closeWriteFile(f)) {
+            throw new ErreurTFTP(2, "Impossible de fermer le fichier : " + fileName);
         }
     }
-    
+
     /**
      * Réception des paquets liés à l'envoi de données
-     * @return 
-     * @throws packetTFTP.ErreurTFTP 
+     *
+     * @return
+     * @throws packetTFTP.ErreurTFTP
      */
-    public byte[] receiveDataPacket() throws Exception{
+    public byte[] receiveDataPacket() throws Exception {
         byte[] buffer = new byte[516];
         DatagramPacket dtg = new DatagramPacket(buffer, buffer.length);
         try {
             socket.receive(dtg);
         } catch (IOException ex) {
-            throw new Exception ( "Aucun Packet reçu");
+            throw new Exception("Aucun Packet reçu");
         }
         if (dtg.getPort() != portUDP) {
             portUDP = dtg.getPort();
@@ -106,6 +118,7 @@ public class ReceptionTFTP extends EchangeTFTP {
 
     /**
      * Envoi du paquet RRQ
+     *
      * @param data Premier paquet de data que l'on reçoit en temps qu'ACK
      * @throws packetTFTP.ErreurTFTP
      */
@@ -117,24 +130,24 @@ public class ReceptionTFTP extends EchangeTFTP {
             receiveDataPacket(data);
             break;
         }
-        if (i>=NB_TENTATIVE)throw new ErreurTFTP (3,"Aucune réponse du serveur : Time Out");
+        if (i >= NB_TENTATIVE) {
+            throw new ErreurTFTP(3, "Aucune réponse du serveur : Time Out");
+        }
     }
 
     /**
-     * Appelle l'envoi d'un paquet RRQ, puis effectue l'appel pour la réception des données
+     * Appelle l'envoi d'un paquet RRQ, puis effectue l'appel pour la réception
+     * des données
+     *
      * @param _file
      * @param adresse
-     * @return 0 Si correctement effectué
-     *         1 Adresse IP incorrecte 
-     *         2 Erreur Fichier
-     *         3 Aucune réponse du serveur : Time Out
-     *         4 Erreur envoi ACK
-     *         5 Erreur dans la réception des données
-     *         6 Erreur dans l'envoi de la demande
+     * @return 0 Si correctement effectué 1 Adresse IP incorrecte 2 Erreur
+     * Fichier 3 Aucune réponse du serveur : Time Out 4 Erreur envoi ACK 5
+     * Erreur dans la réception des données 6 Erreur dans l'envoi de la demande
      */
     public int ReceiveFile(String _file, String adresse) {
         PacketData data = new PacketData();
-        
+
         this.fileName = _file;
         try {
             adresseIP = InetAddress.getByName(adresse);
@@ -148,7 +161,7 @@ public class ReceptionTFTP extends EchangeTFTP {
             System.out.println("Demande RRQ refusée : " + er.getMessage());
             return er.getErrType();
         }
-        
+
         try {
             receiveData(data);
         } catch (ErreurTFTP ex) {
@@ -161,6 +174,6 @@ public class ReceptionTFTP extends EchangeTFTP {
 
     @Override
     public void run() {
-        ReceiveFile("","");
+        ReceiveFile("", "");
     }
 }

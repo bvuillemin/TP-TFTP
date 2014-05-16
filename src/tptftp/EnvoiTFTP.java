@@ -12,45 +12,45 @@ public class EnvoiTFTP extends EchangeTFTP {
         super();
         this.portUDP = 69;
     }
-    
+
     /**
-     * Envoi un paquet jusqu'à ce que l'acquittement se fasse ou que le nombre de tentatives soit dépassé
+     * Envoi un paquet jusqu'à ce que l'acquittement se fasse ou que le nombre
+     * de tentatives soit dépassé
+     *
      * @param packet
-     * @param n 
-     * @throws packetTFTP.ErreurTFTP 
+     * @param n
+     * @throws packetTFTP.ErreurTFTP
      */
     public void trySendPacket(PacketTFTP packet, int n) throws ErreurTFTP {
         byte[] _packet;
         int i;
         for (i = 0; i < NB_TENTATIVE; i++) {
-            try{
+            try {
                 sendPacket(packet);
-            }
-            catch(ErreurTFTP er){
-                throw new ErreurTFTP (4,er.getMessage()+ n);
+            } catch (ErreurTFTP er) {
+                throw new ErreurTFTP(4, er.getMessage() + n);
             }
             try {
                 _packet = receivePacket();
-                if(!PacketAck.isAckPacket(_packet, n)){
-                    try{
-                        PacketError err = new PacketError();
-                        err.getDatagramPacket(_packet);
-                        throw new ErreurTFTP(5,"Erreur reçue " + err.getErrorCode() + " : " + err.getErrMsg());
+                if (!PacketAck.isAckPacket(_packet, n)) {
+                    PacketError err = new PacketError();
+                    if (err.getDatagramPacket(_packet)) {
+                        throw new ErreurTFTP(5, "Erreur reçue " + err.getErrorCode() + " : " + err.getErrMsg());
+                    } else {
+                        throw new ErreurTFTP(6, "Packet non reconnu ou non attendu");
                     }
-                    catch(Exception ex){
-                        throw new ErreurTFTP(6,"Packet non reconnu ou non attendu");
-                    }
+                } else {
+                    break;
                 }
-                else break;
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
         }
-        if (i>=NB_TENTATIVE){
-            throw new ErreurTFTP (3,"Impossible d'envoyer le paquet : " + n + " après " + NB_TENTATIVE + " tentatives.");
+        if (i >= NB_TENTATIVE) {
+            throw new ErreurTFTP(3, "Impossible d'envoyer le paquet : " + n + " après " + NB_TENTATIVE + " tentatives.");
         }
     }
-    
+
     /**
      * Va s'occuper de l'envoi du fichier uniquement
      *
@@ -74,18 +74,18 @@ public class EnvoiTFTP extends EchangeTFTP {
                 data = new PacketData(i, buffer);
                 trySendPacket(data, i);
             }
-            if(!closeReadFile(fe)){
-                throw new ErreurTFTP(2,"Impossible d'ouvrir le fichier : " + nomFichier);
+            if (!closeReadFile(fe)) {
+                throw new ErreurTFTP(2, "Impossible d'ouvrir le fichier : " + nomFichier);
             }
         } catch (Exception ex) {
-            throw new ErreurTFTP(2,"Impossible de lire le fichier : " + nomFichier);
+            throw new ErreurTFTP(2, "Impossible de lire le fichier : " + nomFichier);
         }
     }
-    
+
     /**
-     * 
+     *
      * @param name
-     * @throws ErreurTFTP 
+     * @throws ErreurTFTP
      */
     public void trySendWRQ(String name) throws ErreurTFTP {
         PacketWRQ packet = new PacketWRQ("netascii", name);
@@ -97,14 +97,9 @@ public class EnvoiTFTP extends EchangeTFTP {
      *
      * @param nomFichier
      * @param adresse
-     * @return 
-     * 0 L'envoi s'est bien effectué 
-     * 1 Adresse IP incorrecte 
-     * 2 Erreur Fichier 
-     * 3 Aucune réponse du serveur : Time Out 
-     * 4 Erreur envoi Packet
-     * 5 Erreur reçue
-     * 6 Packet non reconnu reçu
+     * @return 0 L'envoi s'est bien effectué 1 Adresse IP incorrecte 2 Erreur
+     * Fichier 3 Aucune réponse du serveur : Time Out 4 Erreur envoi Packet 5
+     * Erreur reçue 6 Packet non reconnu reçu
      */
     public int SendFile(String nomFichier, String adresse) {
         try {
